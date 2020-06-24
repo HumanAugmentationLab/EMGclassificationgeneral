@@ -1,6 +1,9 @@
 function [L] = lscale(data)
 %L-Scale calculations
-%   Detailed explanation goes here
+%   L-scale is a calculation based on l-moments (second l-moment). Useful
+%   because it is less effected by outliers then other data features. In
+%   this code data can be a two dimensional matrix where each row is the
+%   data of each trial. 
 
 [rows, col] = size(data);
 X = sort(data, 2); %sorts data points from lowest to highest along the rows 
