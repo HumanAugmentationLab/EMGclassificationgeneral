@@ -15,7 +15,7 @@ Num = 1:col-1
 Den = col-1
 
 for n = 1:rows
-    b(n) = 1/col * sum((Num/Den .* data(n,2:col)));
+    b(n) = 1/col * sum((Num/Den .* X(n,2:col))); %SWM changed this from data to X
 end 
 
 tB = [b0 b]'
