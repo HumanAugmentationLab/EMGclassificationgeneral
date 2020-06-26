@@ -1,4 +1,11 @@
 function DFA = DFAfunc(mydata, windowvector)
+    %[mydata] is a 2D matrix of the data, with each trial as a column
+    
+    %[windowvector] is a vector of the window sizes, in number of data
+    %points, being looped through. Minimum window size is 3 as second
+    %degree polyfit does not work with less than 3 data points
+
+
     yk = (cumsum((mydata)-mean(mydata)));
                    
     [dataPoints, trialNum] = size(yk);
@@ -15,7 +22,7 @@ function DFA = DFAfunc(mydata, windowvector)
         end
         if length(w.starttimes) > length(w.endtimes)
             w.endtimes = [w.endtimes w.totaltimewindow(2)];
-            warning('The timewindowbinsize does not split evenly into the totaltimewindow, last window will be smaller')
+            %warning('The timewindowbinsize does not split evenly into the totaltimewindow, last window will be smaller')
             w.endtimes - w.starttimes;
         end
         w.alltimewindowsforfeatures = [w.starttimes; w.endtimes];%(:,1) for first pair
