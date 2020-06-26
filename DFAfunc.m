@@ -1,9 +1,15 @@
 function DFA = DFAfunc(mydata, windowvector)
-    [dataPoints, trialNum] = size(mydata);
-    yk = zeros(dataPoints, trialNum);
-    trialMean = mean(mydata)
-    yk = (cumsum((mydata)-mean(mydata)));
+    %[mydata] is a 2D matrix of the data, with each trial as a column
     
+    %[windowvector] is a vector of the window sizes, in number of data
+    %points, being looped through. Minimum window size is 3 as second
+    %degree polyfit does not work with less than 3 data points
+
+
+    yk = (cumsum((mydata)-mean(mydata)));
+                   
+    [dataPoints, trialNum] = size(yk);
+                                    
     w.totaltimewindow = [1 dataPoints];
     w.timewindowoverlap = 0;
     
@@ -16,8 +22,8 @@ function DFA = DFAfunc(mydata, windowvector)
         end
         if length(w.starttimes) > length(w.endtimes)
             w.endtimes = [w.endtimes w.totaltimewindow(2)];
-            warning('The timewindowbinsize does not split evenly into the totaltimewindow, last window will be smaller')
-            w.endtimes - w.starttimes
+            %warning('The timewindowbinsize does not split evenly into the totaltimewindow, last window will be smaller')
+            w.endtimes - w.starttimes;
         end
         w.alltimewindowsforfeatures = [w.starttimes; w.endtimes];%(:,1) for first pair
         
@@ -25,7 +31,12 @@ function DFA = DFAfunc(mydata, windowvector)
         
         for trial = 1:trialNum
             
-                for L = 1:(w.totaltimewindow(2)/windowvector(bin))
+            if w.endtimes(end)>dataPoints
+               w.endtimes(end) = [];
+               w.starttimes(end) = [];
+            end
+            
+                for L = 1:(floor(w.totaltimewindow(2)/windowvector(bin)))
                      databin = yk((w.starttimes(L):w.endtimes(L)), trialNum);
                      if L == 1
                         epochData = databin;
@@ -42,7 +53,7 @@ function DFA = DFAfunc(mydata, windowvector)
                 epochTrial = cat(3, epochTrial, epochData); 
             end
             
-            for loop = 1:(w.totaltimewindow(2)/windowvector(bin))
+            for loop = 1:(floor(w.totaltimewindow(2)/windowvector(bin)))
                 coeff(loop,:,trial) = polyfit(xval,epochTrial(1:(windowvector(bin)),loop,trial), 2);
                 
                 singleYn = polyval(coeff(loop,:,trial), xval);
@@ -60,9 +71,8 @@ function DFA = DFAfunc(mydata, windowvector)
             end
         end
         
-        squeeze(yn)
-        yk = yk(1:(size(yn,2)),:) % When testing, yk ended up one row smaller than yn, so this makes yk and yn the same dimensions
-        singleFn  = sqrt((sum((yk - squeeze(yn)).^2)/(size(yk,1))));
+        ykResized = yk(1:(size(yn,2)),:); % When testing, yk ended up one row smaller than yn, so this makes yk and yn the same dimensions
+        singleFn  = sqrt((sum((ykResized - squeeze(yn)).^2)/(size(ykResized,1))));
         if bin == 1
                     fn = singleFn;
                 else
@@ -70,9 +80,9 @@ function DFA = DFAfunc(mydata, windowvector)
         end
     end
 
-    flucProfiles = squeeze(fn)
-    logFn = log10(flucProfiles)
-    logBinSize = log10(windowvector)
+    flucProfiles = squeeze(fn);
+    logFn = log10(flucProfiles);
+    logBinSize = log10(windowvector);
     DFA = (mean((logFn./logBinSize)'))'
 end
 
