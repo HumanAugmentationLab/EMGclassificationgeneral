@@ -79,10 +79,21 @@ function DFA = DFAfunc(mydata, windowvector)
                     fn = cat(3, fn, singleFn); 
         end
     end
-
     flucProfiles = squeeze(fn);
     logFn = log10(flucProfiles);
     logBinSize = log10(windowvector);
-    DFA = (mean((logFn./logBinSize)'))'
+    
+    
+    for trialLoop = 1:trialNum
+        DFAtemp = polyfit((logBinSize),(logFn(trialLoop,:)),1);
+        if trialLoop == 1
+            DFA = DFAtemp(1);
+        else
+            DFA = cat(2, DFA, DFAtemp(1)); 
+        end
+
+    end
+    
+    
 end
 
