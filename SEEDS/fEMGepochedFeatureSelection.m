@@ -12,7 +12,7 @@ if load_data
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
-save_output = false; % True if you want to save a features file
+save_output = true; % True if you want to save a features file
 dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\';
 fname_output = '-allfeatures'; %Tag for file name (follows subject name)
 
@@ -306,7 +306,6 @@ for s=1:length(subjectnumbers)
         if ttround == 1
             %Do training data first
             %traindata = tempdata;
-
             % Randomly permute the data so not ordered
             traindata = tempdata(randperm(height(tempdata)),:);
             clear tempdata;
@@ -315,10 +314,8 @@ for s=1:length(subjectnumbers)
             end
         elseif ttround == 2
             %testdata = tempdata;
-
             %Randomly permute the test data
             testdata = tempdata(randperm(height(tempdata)),:);
-
             clear tempdata
         end  
     end
