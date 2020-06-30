@@ -1,4 +1,4 @@
-<<<<<< HEAD
+
 % These scripts can help you load data from multiple .mat files provided in
 % the SEEDs data base.
 
@@ -6,7 +6,7 @@
 
 % This is the full file path for the folder that contains the subj* folder
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; %Must end in slash, this one is for Sam
-dir_root = 'C:\Users\dketchum\Documents\Summer Research 2020\'; % Declan - update with your file location and uncomment
+dir_root = 'C:\Users\dketchum\Documents\Summer Research 2020\subj04.zip'; % Declan - update with your file location and uncomment
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; % Rishita - update with your file location and uncomment
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; % Maya - update with your file location and uncomment
 
@@ -159,5 +159,3 @@ for s=1:length(subjectnumbers)
        disp(strcat('Saving subj',num2str(subjectnumbers(s),'%02.f')))
    end
 end
-
->>>>>>> 6b482c51aa874f1df750268de69821f004742712
