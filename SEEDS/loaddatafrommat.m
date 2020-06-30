@@ -9,7 +9,7 @@ dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; %Must end in slash, this 
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; % Rishita - update with your file location and uncomment
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; % Maya - update with your file location and uncomment
 
-subjectnumbers = 1; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 4; %Can be a vector with multiple numbers or just an integer
 sessionnumbers = 1:3; %Which sessions to include (usually 1-3)
 movementnumbers = 1:13; %which movement to load
 repetitionnumbers = 1:6; %Which repetitions to include
