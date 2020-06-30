@@ -4,8 +4,8 @@
 %% This settings help you load your specific data.
 
 % This is the full file path for the folder that contains the subj* folder
-dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; %Must end in slash, this one is for Sam
-%dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; % Declan - update with your file location and uncomment
+%dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; %Must end in slash, this one is for Sam
+dir_root = 'C:\Users\dketchum\Documents\Summer Research 2020\'; % Declan - update with your file location and uncomment
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; % Rishita - update with your file location and uncomment
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; % Maya - update with your file location and uncomment
 
