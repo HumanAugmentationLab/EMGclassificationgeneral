@@ -1,4 +1,7 @@
 
+dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\';
+fname_input = '-allfeatures'; %Tag for file name (follows subject name)
+
 
 %% Run classification  
 

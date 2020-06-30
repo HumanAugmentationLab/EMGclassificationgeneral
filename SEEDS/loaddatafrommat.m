@@ -1,4 +1,3 @@
-<<<<<< HEAD
 % These scripts can help you load data from multiple .mat files provided in
 % the SEEDs data base.
 
@@ -159,5 +158,3 @@ for s=1:length(subjectnumbers)
        disp(strcat('Saving subj',num2str(subjectnumbers(s),'%02.f')))
    end
 end
-
->>>>>>> 6b482c51aa874f1df750268de69821f004742712
