@@ -9,6 +9,7 @@ load_data = true; %True if you want to load the data from the folder below, fals
 if load_data
     clearvars -except load_data
     dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\'; %Must end in slash, this one is for Sam
+    %dir_inpu
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
@@ -40,7 +41,10 @@ includedchannels = [];%1:2; %channels to included, this will calculate features 
 %skip in order to avoid repeat features)
 % [] for all channels
 
-includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','rms', 'iemg','mmav1','var','mpv','var','ssi'};
+%Keep this one as all feature, but sometimes comment it out
+includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110to256', 'bp256to512', 'rms', 'iemg','mmav1','var','mpv','var','ssi'};
+% Subset of features to use
+%includedfeatures = {'rms','var','mpv'};
 
 % Time windows and overlap (when breaking window up into multiple bins)
 w.totaltimewindow = [2000 4000]; %start and stop in ms. If timepoints don't line up, this will select a slightly later time
@@ -55,10 +59,10 @@ options.preprocess.filter = false;
 
 % Load subject data
 for s=1:length(subjectnumbers)
-    if load_data
+    if load_data %if you're loading data from .mat files
         load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'.mat'));
-    else
-        if exists('ALLEEG'); EEG = ALLEEG{s};
+    else %if the data is already in your workspace, labeled ALLEEG or EEG
+        if exists('ALLEEG'); EEG = ALLEEG{s}; 
         else; warning('ALLEEG does not exist, using EEG as data source, might be the same for all subjects'); end
     end
     
@@ -102,6 +106,7 @@ for s=1:length(subjectnumbers)
         EEG.data = mydata(:,:,balidx); % Replace data with subset of data
         EEG.epochlabelscat = EEG.epochlabelscat(balidx); %Replace labels with subset of labels
         EEG.trials = length(EEG.epochlabelscat); %New trials count
+        clearvars mydata idx balidx bicx
     end
 
     % If only choosing a subset of conditions, pick out appropriate trials
@@ -122,6 +127,8 @@ for s=1:length(subjectnumbers)
     if ~isempty(includedchannels)
         EEG.data = EEG.data(includedchannels,:,:);
         EEG.chanlocs.labels = EEG.chanlocs.labels(includedchannels,:); % TODO: May need to fix this in the future if labels changes format
+    else 
+        includedchannels = 1:size(EEG.data,1);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -184,8 +191,6 @@ for s=1:length(subjectnumbers)
     w.alltimewindowsforfeatures = [w.starttimes; w.endtimes]; %(:,1) for first pair
 
     
-    %% Select features
-
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Loop through all desired features and put into data table
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -215,54 +220,70 @@ for s=1:length(subjectnumbers)
                 for  tw = 1:size(w.alltimewindowsforfeatures,2)
                     timewindowforfeatures = w.alltimewindowsforfeatures(:,tw);
                     timewindowepochidx = (find(EEG.times>=timewindowforfeatures(1),1)):(find(EEG.times>=timewindowforfeatures(2),1));
-
+                    
+                    %mydata is a subset of the data for the channel,
+                    %timewindow, and selected indices (train/test and
+                    %conditions)
+                    mydata = squeeze(EEG.data(ch,timewindowepochidx,idxt)); 
+                    
+                    % Note: because we're looping through multiple time
+                    % bins, it's important to  check the size of the
+                    % features going into fvalues. Should be trials x
+                    % feature 
                     % Calcuate actual features by name in loop
                     switch includedfeatures{f}
                         case 'absmean'
-                            %td = EEG.data(ch,:,idxt) - mean(EEG.data(ch,timewindowepochidx,idxt)); %remove the trial mean
-                            fvalues = [fvalues squeeze(mean(abs(EEG.data(ch,:,idxt)),2))];
+                            fvalues = [fvalues mean(abs(mydata))']; % 
                         case 'rms'
-                            fvalues = [fvalues squeeze(rms(EEG.data(ch,timewindowepochidx,idxt)))];                   
+                            fvalues = [fvalues rms(mydata)'];                   
                         case 'iemg'
-                            fvalues = [fvalues squeeze(sum(abs(EEG.data(ch,timewindowepochidx,idxt)), 2))];
-                        case 'ssi'
+                            fvalues = [fvalues sum(abs(mydata))'];
+                        case 'ssi' %TODO: fix so not same as iemg or exclude
                             fvalues = [fvalues squeeze(sum(abs(EEG.data(ch,timewindowepochidx,idxt)), 2))];
                             % This could instead be done with the integral, which gives a smaller but correlated number if rectified
                             %ctr = squeeze(cumtrapz(EEG.timessec(timewindowepochidx), abs(EEG.data(ch,timewindowepochidx,idxt))));
                             %fvalues = ctr(end,:)'; % This could be useful if you
                             %wanted to take the diff between different increments.
                         case 'mpv'
-                            fvalues = [fvalues squeeze(max(EEG.data(ch,timewindowepochidx,idxt), [], 2))];
+                            fvalues = [fvalues max(mydata)'];
                         case 'mmav1'
-                            low = prctile(EEG.data(ch,timewindowepochidx,idxt),25,2);
-                            high = prctile(EEG.data(ch,timewindowepochidx,idxt),75,2);
-                            weightedVals = EEG.data(ch,timewindowepochidx,idxt); %SWM: added idxt
+                            low = prctile(mydata,25,1);
+                            high = prctile(mydata,75,1);
+                            weightedVals = mydata; %SWM: added idxt
                             weightedVals(weightedVals < low) = weightedVals(weightedVals < low)*.5;
                             weightedVals(weightedVals > high) = weightedVals(weightedVals > high)*.5;
-                            fvalues = [fvalues squeeze(mean(abs(weightedVals),2))];
+                            fvalues = [fvalues mean(abs(weightedVals))'];
                         case 'var'
-                            fvalues = [fvalues squeeze(var(EEG.data(ch,timewindowepochidx,idxt), 0, 2))];
+                            fvalues = [fvalues var(mydata)'];
                         case 'bp2t20'                       
-                            fvalues = [fvalues bandpower(squeeze(EEG.data(ch,timewindowepochidx,idxt)),EEG.srate,[2 20])'];
-                        case 'bp20t40'                       
-                            fvalues = [fvalues bandpower(squeeze(EEG.data(ch,timewindowepochidx,idxt)),EEG.srate,[20 40])'];
+                            fvalues = [fvalues bandpower(mydata,EEG.srate,[2 20])'];
+                        case 'bp20t40'             
+                            fvalues = [fvalues bandpower(mydata,EEG.srate,[20 40])'];
                         case 'bp40t56'                       
-                            fvalues = [fvalues bandpower(squeeze(EEG.data(ch,timewindowepochidx,idxt)),EEG.srate,[40 56])'];
-                        case 'bp64t80'                       
-                            fvalues = [fvalues bandpower(squeeze(EEG.data(ch,timewindowepochidx,idxt)),EEG.srate,[64 80])'];
-                        case 'bp80t110'                       
-                            fvalues = [fvalues bandpower(squeeze(EEG.data(ch,timewindowepochidx,idxt)),EEG.srate,[80 110])'];
-                        case 'medianfreq'
-                            fvalues = [fvalues squeeze(real(median(fft(EEG.data(ch,timewindowepochidx,idxt), '', 2), 2)))];
-                        case 'mfl'
-                            fvalues = [fvalues squeeze(real(log10(sqrt(sum(diff(EEG.data(ch,timewindowepochidx,idxt)).^2, 2)))))];
-                        case 'wamp'
+                            fvalues = [fvalues bandpower(mydata,EEG.srate,[40 56])'];
+                        case 'bp64t80'
+                            fvalues = [fvalues bandpower(mydata,EEG.srate,[64 80])'];
+                        case 'bp80t110'
+                            fvalues = [fvalues bandpower(mydata,EEG.srate,[80 110])'];
+                        case 'bp110to256'
+                            fvalues = [fvalues bandpower(mydata,EEG.srate,[110 256])'];
+                        case 'bp256to512'
+                            fvalues = [fvalues bandpower(mydata,EEG.srate,[256 512])'];
+                        case 'medianfreq' %TODO: check this code. real after median? are these the right dims?
+                            fvalues = [fvalues real(median(fft(mydata,'',1)))];
+                            %fvalues = [fvalues squeeze(real(median(fft(EEG.data(ch,timewindowepochidx,idxt), '', 2), 2)))];
+                        case 'mfl' %TODO: double check this code
+                            fvalues = [fvalues real(log10(sqrt(sum(diff(mydata).^2))))'];
+                            %fvalues = [fvalues squeeze(real(log10(sqrt(sum(diff(EEG.data(ch,timewindowepochidx,idxt)).^2, 2)))))];
+                        case 'wamp' % Wilson Amplitude %TODO: check this code
                             % There is almost definitely a better way to do
                             % this.
                             threshold = 0.05;
-                            shifted = circshift(EEG.data(ch,timewindowepochidx, idxt), 1, 2);
-                            wamp_sum = sum(abs(EEG.data(ch,timewindowepochidx, idxt)) + threshold < (abs(shifted)), 2);
-                            fvalues = [fvalues squeeze(wamp_sum)];
+                            shifted = circshift(mydata,1,1);
+                            wamp_sum = sum(abs(mydata) + threshold < abs(shifted));
+                            %shifted = circshift(EEG.data(ch,timewindowepochidx, idxt), 1, 2);
+                            %wamp_sum = sum(abs(EEG.data(ch,timewindowepochidx, idxt)) + threshold < (abs(shifted)), 2);
+                            fvalues = [fvalues wamp_sum'];
                         otherwise
                             disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
                     end
@@ -274,7 +295,6 @@ for s=1:length(subjectnumbers)
                         '. _  Please fix the code to align shapes. Num trials: ',num2str(length(idxt)),...
                         ' and size fvalues : ',num2str(size(fvalues))))
                 else
-
                     % Put fvalues into the datatable with appropriate feature name
                     eval(['tempdata.FEAT_ch' num2str(ch) '_' includedfeatures{f} ' = fvalues;']);
                 end
@@ -287,7 +307,6 @@ for s=1:length(subjectnumbers)
         if ttround == 1
             %Do training data first
             %traindata = tempdata;
-
             % Randomly permute the data so not ordered
             traindata = tempdata(randperm(height(tempdata)),:);
             clear tempdata;
@@ -296,10 +315,8 @@ for s=1:length(subjectnumbers)
             end
         elseif ttround == 2
             %testdata = tempdata;
-
             %Randomly permute the test data
             testdata = tempdata(randperm(height(tempdata)),:);
-
             clear tempdata
         end  
     end
@@ -310,9 +327,9 @@ for s=1:length(subjectnumbers)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if save_output
         if dotrainandtest
-            save(strcat(dir_output,'subj',num2str(subjectnumbers(s),'%02.f'),fname_output,'.mat'),'traindata','testdata');
+            save(strcat(dir_output,'subj',num2str(subjectnumbers(s),'%02.f'),fname_output,'.mat'),'traindata','testdata','includedfeatures','includedchannels','subjectnumbers');
         else
-            save(strcat(dir_output,'subj',num2str(subjectnumbers(s),'%02.f'),fname_output,'.mat'),'traindata');
+            save(strcat(dir_output,'subj',num2str(subjectnumbers(s),'%02.f'),fname_output,'.mat'),'traindata','includedfeatures','includedchannels','subjectnumbers');
         end
     end
 end

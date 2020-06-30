@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 57e7702c1aef9ca1c834121f128eecb00b6b59e0
 % These scripts can help you load data from multiple .mat files provided in
 % the SEEDs data base.
 
