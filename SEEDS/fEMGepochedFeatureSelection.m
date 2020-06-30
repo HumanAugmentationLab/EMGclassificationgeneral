@@ -8,19 +8,21 @@
 load_data = true; %True if you want to load the data from the folder below, false if you already have the data loaded as an EEG
 if load_data
     clearvars -except load_data
-    dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\'; %Must end in slash, this one is for Sam
+    %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
+    dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
 save_output = true; % True if you want to save a features file
-dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\';
+%dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
+dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
 fname_output = '-allfeatures'; %Tag for file name (follows subject name)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 1; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 4; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -41,7 +43,8 @@ includedchannels = [];%1:2; %channels to included, this will calculate features 
 % [] for all channels
 
 %Keep this one as all feature, but sometimes comment it out
-includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110to256', 'bp256to512', 'rms', 'iemg','mmav1','var','mpv','var','ssi'};
+%includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110to256', 'bp256to512', 'rms', 'iemg','mmav1','var','mpv','var','ssi'};
+includedfeatures = {'mav', 'var', 'rms', 'zeros'}; %need to add 'aac' features included in SEEDS paper 
 % Subset of features to use
 %includedfeatures = {'rms','var','mpv'};
 
@@ -245,6 +248,8 @@ for s=1:length(subjectnumbers)
                             %wanted to take the diff between different increments.
                         case 'mpv'
                             fvalues = [fvalues max(mydata)'];
+                        case 'mav' %mean absolute value
+                            fvalues = mean(abs(mydata));
                         case 'mmav1'
                             low = prctile(mydata,25,1);
                             high = prctile(mydata,75,1);
@@ -283,6 +288,12 @@ for s=1:length(subjectnumbers)
                             %shifted = circshift(EEG.data(ch,timewindowepochidx, idxt), 1, 2);
                             %wamp_sum = sum(abs(EEG.data(ch,timewindowepochidx, idxt)) + threshold < (abs(shifted)), 2);
                             fvalues = [fvalues wamp_sum'];
+                        %case 'aac'
+                            %need to figure out what this is and how to add
+                            %it
+                        case 'zeros'
+                            zcd = dsp.ZeroCrossingDetector;
+                            fvalues = zcd(mydata);
                         otherwise
                             disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
                     end
