@@ -8,21 +8,21 @@
 load_data = true; %True if you want to load the data from the folder below, false if you already have the data loaded as an EEG
 if load_data
     clearvars -except load_data
-    %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
-    dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
+    dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
+    %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
-save_output = true; % True if you want to save a features file
-%dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
+save_output = false; % True if you want to save a features file
+dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
+%dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
 fname_output = '-allfeatures'; %Tag for file name (follows subject name)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 4; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 1; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -37,20 +37,21 @@ makebalanced = true; %If true, make sure there are the same number of conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% Channel, features, and time window settings %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-includedchannels = [];%1:2; %channels to included, this will calculate features for each separately 
+includedchannels = 1:2;%[];%1:2; %channels to included, this will calculate features for each separately 
 %(if you have cross channel features, you need to write something in to
 %skip in order to avoid repeat features)
 % [] for all channels
 
 %Keep this one as all feature, but sometimes comment it out
 %includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110to256', 'bp256to512', 'rms', 'iemg','mmav1','var','mpv','var','ssi'};
-includedfeatures = {'mav', 'var', 'rms', 'zeros'}; %need to add 'aac' features included in SEEDS paper 
+%includedfeatures = {'mav', 'var', 'rms', 'zeros'}; %need to add 'aac' features included in SEEDS paper 
+includedfeatures = {'zeros'};
 % Subset of features to use
 %includedfeatures = {'rms','var','mpv'};
 
 % Time windows and overlap (when breaking window up into multiple bins)
 w.totaltimewindow = [2000 4000]; %start and stop in ms. If timepoints don't line up, this will select a slightly later time
-w.timewindowbinsize = 2000; %This should ideally divide into an equal number of time points
+w.timewindowbinsize = 1000; %This should ideally divide into an equal number of time points
 w.timewindowoverlap = 0; %Overlap of the time windows
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -249,7 +250,7 @@ for s=1:length(subjectnumbers)
                         case 'mpv'
                             fvalues = [fvalues max(mydata)'];
                         case 'mav' %mean absolute value
-                            fvalues = mean(abs(mydata));
+                            fvalues = [fvalues mean(abs(mydata))'];
                         case 'mmav1'
                             low = prctile(mydata,25,1);
                             high = prctile(mydata,75,1);
@@ -293,7 +294,7 @@ for s=1:length(subjectnumbers)
                             %it
                         case 'zeros'
                             zcd = dsp.ZeroCrossingDetector;
-                            fvalues = zcd(mydata);
+                            fvalues = [fvalues zcd(mydata)'];
                         otherwise
                             disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
                     end
