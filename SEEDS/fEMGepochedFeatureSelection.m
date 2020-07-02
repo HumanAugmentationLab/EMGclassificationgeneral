@@ -94,9 +94,11 @@ for s=1:length(subjectnumbers)
     end
 
     availablespeedlabels = unique(EEG.speed);
-    if isempty(speed)
-        speed = cellstr(availablespeedslabels);
+    if isempty(speeds)
+        speeds = cellstr(availablespeedslabels);
     end
+    
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%% Balance data if option is true %%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
