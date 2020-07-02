@@ -1,13 +1,11 @@
 
-dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-%dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
-fname_input = '-SEEDSfeatures'; %Tag for file name (follows subject name)
+%dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
+dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
+fname_input = '-allfeatures'; %Tag for file name (follows subject name)
 
-includedspeeds={'both','slow','fast'};%
+includedspeeds={'both
 sp = 1;
-subjectnumbers = 1;
-s=1; %This is here to make loops later
-load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
+load(strcat(dir_output,'subj',num2str(subjectnumbers(s),'%02.f'),fname_output,'_speed',includedspeeds{sp},'.mat'))
 
 includedchannels = [1:6:126 127:134]; % [] for all, otherwise this is a vector of channel numbers
 
