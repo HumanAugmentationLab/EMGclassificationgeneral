@@ -1,5 +1,6 @@
 
-dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\';
+%dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
+dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
 fname_input = '-allfeatures'; %Tag for file name (follows subject name)
 
 
