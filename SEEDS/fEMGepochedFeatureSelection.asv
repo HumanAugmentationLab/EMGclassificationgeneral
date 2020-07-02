@@ -30,7 +30,7 @@ subjectnumbers = sub_num; %Can be a vector with multiple numbers or just an inte
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
 
-speeds = ["slow"];
+speeds = "slow";
 
 dotrainandtest = false; %If false, do train only and cross validate
 % You might do false if you have very little data or if you have a separate
@@ -80,8 +80,6 @@ for s=1:length(subjectnumbers)
     EEG.timessec = EEG.times./1000; %version of times in seconds, useful for signal processing
     % Labels used for this classification
     EEG.epochlabelscat = EEG.movement; %Movement if classifying different hand positions
-    
-    EEG.speed = EEG.speed; 
 
     % Note: This is a good place to create new trial labels, for example, if
     % you wanted to make new categories that are combinations of multiple
@@ -93,11 +91,6 @@ for s=1:length(subjectnumbers)
         condnames = cellstr(availableeventlabels);
     end
 
-    availablespeedlabels = unique(EEG.speed);
-    if isempty(speeds)
-        speeds = cellstr(availablespeedslabels);
-    end
-    
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%% Balance data if option is true %%%%%%%%%%%%%%%%%%
