@@ -9,23 +9,24 @@ load_data = true; %True if you want to load the data from the folder below, fals
 if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
-    dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
+    %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
     %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
+    dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
     %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
 save_output = true; % True if you want to save a features file
-dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
+%dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
 %dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
-%dir_output = my_dir;
+dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 1;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 2;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -60,6 +61,9 @@ else %This list can be manually set to whatever you want, make sure you choose a
     includedfeatures = {'rms','var','mpv'};
 end
 
+includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
+        'rms', 'iemg','mmav1','var','mpv','var','absmean', 'mav', 'medianfreq', 'aac', 'zeros', 'mfl'};
+
 % Time windows and overlap (when breaking window up into multiple bins)
 w.totaltimewindow = [2000 4000]; %start and stop in ms. If timepoints don't line up, this will select a slightly later time
 w.timewindowbinsize = 2000; %This should ideally divide into an equal number of time points
@@ -72,9 +76,9 @@ options.preprocess.meanremoval = false;
 options.preprocess.filter = false;
 
 % Load subject data
-for s=2
+for s=1:length(subjectnumbers)
     if load_data %if you're loading data from .mat files
-        load(strcat(dir_input,'subj',num2str(2,'%02.f'),fname_input,'.mat'));
+        load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'.mat'));
     else %if the data is already in your workspace, labeled ALLEEG or EEG
         if exists('ALLEEG'); EEG = ALLEEG{s}; 
         else; warning('ALLEEG does not exist, using EEG as data source, might be the same for all subjects'); end
@@ -376,7 +380,7 @@ for s=2
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if save_output
             if dotrainandtest
-                save(strcat(dir_output,'subj'2,'%02.f'),fname_output,'_speed',includedspeeds{sp},'.mat'),'traindata','testdata','includedfeatures','includedchannels','subjectnumbers');
+                save(strcat(dir_output,'subj',num2str(subjectnumbers(s),'%02.f'),fname_output,'_speed',includedspeeds{sp},'.mat'),'traindata','testdata','includedfeatures','includedchannels','subjectnumbers');
             else
                 save(strcat(dir_output,'subj',num2str(subjectnumbers(s),'%02.f'),fname_output,'_speed',includedspeeds{sp},'.mat'),'traindata','includedfeatures','includedchannels','subjectnumbers');
             end
