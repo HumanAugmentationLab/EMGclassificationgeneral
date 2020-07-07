@@ -75,7 +75,6 @@ includedspeeds = {'both','slow','fast'};
 % end
 
 includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
-        'rms', 'iemg','mmav1','var','mpv','var','absmean', 'mav', 'aac', 'zeros', 'mfl'};
         'rms', 'iemg','mmav1','var','mpv','var','absmean', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp'};
 
 % Time windows and overlap (when breaking window up into multiple bins)
