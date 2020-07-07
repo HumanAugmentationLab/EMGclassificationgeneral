@@ -8,18 +8,18 @@
 
 % This is the full file path for the folder that contains the subj* folder
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; %Must end in slash, this one is for Sam
-%dir_root = 'C:\Users\dketchum\Documents\Summer Research 2020\'; % Declan - update with your file location and uncomment
-dir_root = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; % Rishita - update with your file location and uncomment
+dir_root = 'C:\Users\dketchum\Documents\Summer Research 2020\'; % Declan - update with your file location and uncomment
+%dir_root = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; % Rishita - update with your file location and uncomment
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; % Maya - update with your file location and uncomment
 
 % Directory to save the output file
 %dir_output =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\'; %Must end in slash, this one is for Sam
-%dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's output directories
-dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's output directory
+dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's output directories
+%dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's output directory
 fname_output = '-alldata'; % Tag for file name (follows subject name)
 save_output = true; % True for save the output as a .mat file
 
-subjectnumbers = 2; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 4; %Can be a vector with multiple numbers or just an integer
 sessionnumbers = 1:3; %Which sessions to include (usually 1-3)
 movementnumbers = 1:13; %which movement to load
 repetitionnumbers = 1:6; %Which repetitions to include
