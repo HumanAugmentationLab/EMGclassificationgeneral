@@ -93,7 +93,7 @@ function DFA = DFAfunc(mydata, windowvector)
         end
 
     end
-    
+    DFA = DFA';
     
 end
 
