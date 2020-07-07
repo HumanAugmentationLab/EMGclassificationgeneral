@@ -276,8 +276,6 @@ for s=1:length(subjectnumbers)
                         % feature 
                         % Calcuate actual features by name in loop
                         switch includedfeatures{f}
-                            case 'absmean'
-                                fvalues = [fvalues mean(abs(mydata))']; % 
                             case 'rms'
                                 fvalues = [fvalues rms(mydata)'];                   
                             case 'iemg'
