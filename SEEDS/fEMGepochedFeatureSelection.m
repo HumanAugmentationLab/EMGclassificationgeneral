@@ -10,36 +10,24 @@ if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
     %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
-<<<<<<< HEAD
     dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
-=======
-    %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
-    dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
->>>>>>> 1f0153e4f93a992e61af51580cf78cdb3ce78ddd
+    %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
     %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
 save_output = true; % True if you want to save a features file
 %dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-<<<<<<< HEAD
 dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
 %dir_output = my_dir;
-=======
-%dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
-dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
->>>>>>> 1f0153e4f93a992e61af51580cf78cdb3ce78ddd
+%dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<<<<<< HEAD
 subjectnumbers = 4;%sub_num; %Can be a vector with multiple numbers or just an integer
-=======
-subjectnumbers = 2;%sub_num; %Can be a vector with multiple numbers or just an integer
->>>>>>> 1f0153e4f93a992e61af51580cf78cdb3ce78ddd
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -75,7 +63,7 @@ includedspeeds = {'both','slow','fast'};
 % end
 
 includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
-        'rms', 'iemg','mmav1','mpv','var','absmean', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp'};
+        'rms', 'iemg','mmav1','mpv','var','absmean', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp', 'lscale'};
 
 % Time windows and overlap (when breaking window up into multiple bins)
 w.totaltimewindow = [2000 4000]; %start and stop in ms. If timepoints don't line up, this will select a slightly later time
@@ -351,6 +339,8 @@ for s=1:length(subjectnumbers)
                             case 'zeros'
                                 zcd = dsp.ZeroCrossingDetector;
                                 fvalues = [fvalues zcd(mydata)'];
+                            case 'lscale'
+                                fvalues = [fvalues lscale(mydata)'];
                             otherwise
                                 disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
                         end
