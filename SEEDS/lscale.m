@@ -25,6 +25,6 @@ Coeff = [-1; 2]; %changed this from LegendreShiftPoly(i)
 for i = 1:col
     l(i) = sum((Coeff.*tB(:,i)));
 end 
-L = l
+L = l;
 
 end
