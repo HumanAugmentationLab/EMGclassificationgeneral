@@ -1,4 +1,4 @@
-function [L] = lscale(X);
+function [L] = lscale(X)
 %L-Scale calculations
 %   L-scale is a calculation based on l-moments (second l-moment). Useful
 %   because it is less effected by outliers then other data features. In
@@ -25,6 +25,6 @@ Coeff = [-1; 2]; %changed this from LegendreShiftPoly(i)
 for i = 1:col
     l(i) = sum((Coeff.*tB(:,i)));
 end 
-L = l;
+L = l
 
 end

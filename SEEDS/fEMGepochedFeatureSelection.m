@@ -11,22 +11,24 @@ if load_data
     %to work (but it might be important)
     %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
     %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
-    dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
-    %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
+    %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
+    dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
 save_output = true; % True if you want to save a features file
 %dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
 %dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
-dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
+dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\'; %Maya's
+%dir_output = my_dir;
+%dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 2;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 3;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -62,13 +64,13 @@ includedspeeds = {'both','slow','fast'};
 % end
 
 includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
-        'rms', 'iemg','mmav1','var','mpv','var','absmean', 'mav', 'aac', 'zeros', 'mfl'};
+        'rms', 'iemg','mmav1','mpv','var', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp', 'lscale', 'dfa'};
 
 % Time windows and overlap (when breaking window up into multiple bins)
 w.totaltimewindow = [2000 4000]; %start and stop in ms. If timepoints don't line up, this will select a slightly later time
 w.timewindowbinsize = 2000; %This should ideally divide into an equal number of time points
 w.timewindowoverlap = 0; %Overlap of the time windows
-
+dfabinsize = [25 50 100 200 500 1000 2000];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%            Preprocessing settings           %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -275,8 +277,6 @@ for s=1:length(subjectnumbers)
                         % feature 
                         % Calcuate actual features by name in loop
                         switch includedfeatures{f}
-                            case 'absmean'
-                                fvalues = [fvalues mean(abs(mydata))']; % 
                             case 'rms'
                                 fvalues = [fvalues rms(mydata)'];                   
                             case 'iemg'
@@ -338,6 +338,10 @@ for s=1:length(subjectnumbers)
                             case 'zeros'
                                 zcd = dsp.ZeroCrossingDetector;
                                 fvalues = [fvalues zcd(mydata)'];
+                            case 'lscale'
+                                fvalues = [fvalues lscale(mydata)'];
+                            case 'dfa'
+                                fvalues = [fvalues DFAfunc(mydata,dfabinsize)];
                             otherwise
                                 disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
                         end

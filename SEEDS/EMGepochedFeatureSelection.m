@@ -11,7 +11,6 @@ if load_data
     %to work (but it might be important)
     %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
     dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
-    %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
     %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
@@ -20,7 +19,6 @@ save_output = true; % True if you want to save a features file
 %dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
 dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
 %dir_output = my_dir;
-%dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -53,17 +51,13 @@ includedchannels = [];%1:2; %channels to included, this will calculate features 
 includedspeeds = {'both','slow','fast'}; 
 
 % Subset of features to use
-% if strcmp(fname_output,'-allfeatures') %The list below should be updated to include all possible features
-%     includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
-%         'rms', 'iemg','mmav1','var','mpv','var','absmean', 'mav', 'medianfreq', 'aac', 'zeros', 'mfl'};
-% elseif strcmp(fname_output,'-SEEDSfeatures')
-%     includedfeatures = {'mav', 'var', 'rms', 'zeros', 'aac'}; %features included in SEEDS paper 
-% else %This list can be manually set to whatever you want, make sure you choose an appropriate fname_output above
-%     includedfeatures = {'rms','var','mpv'};
-% end
-
-includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
-        'rms', 'iemg','mmav1','mpv','var','absmean', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp', 'lscale'};
+if strcmp(fname_output,'-allfeatures') %The list below should be updated to include all possible features
+    includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110to256', 'bp256to512', 'rms', 'iemg','mmav1','var','mpv','var','ssi'};
+elseif strcmp(fname_output,'-SEEDSfeatures')
+    includedfeatures = {'mav', 'var', 'rms', 'zeros', 'aac'}; %features included in SEEDS paper 
+else %This list can be manually set to whatever you want, make sure you choose an appropriate fname_output above
+    includedfeatures = {'rms','var','mpv'};
+end
 
 % Time windows and overlap (when breaking window up into multiple bins)
 w.totaltimewindow = [2000 4000]; %start and stop in ms. If timepoints don't line up, this will select a slightly later time
@@ -311,14 +305,14 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[64 80])'];
                             case 'bp80t110'
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[80 110])'];
-                            case 'bp110t256'
+                            case 'bp110to256'
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[110 256])'];
-                            case 'bp256t512'
+                            case 'bp256to512'
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[256 512])'];
                             case 'medianfreq' %TODO: check this code. real after median? are these the right dims?
                                 fvalues = [fvalues real(median(fft(mydata,'',1)))];
                                 %fvalues = [fvalues squeeze(real(median(fft(EEG.data(ch,timewindowepochidx,idxt), '', 2), 2)))];
-                            case 'mfl' %code double checked by Rishita on 7/6/2020
+                            case 'mfl' %TODO: double check this code
                                 fvalues = [fvalues real(log10(sqrt(sum(diff(mydata).^2))))'];
                                 %fvalues = [fvalues squeeze(real(log10(sqrt(sum(diff(EEG.data(ch,timewindowepochidx,idxt)).^2, 2)))))];
                             case 'wamp' % Wilson Amplitude %TODO: check this code
@@ -339,8 +333,6 @@ for s=1:length(subjectnumbers)
                             case 'zeros'
                                 zcd = dsp.ZeroCrossingDetector;
                                 fvalues = [fvalues zcd(mydata)'];
-                            case 'lscale'
-                                fvalues = [fvalues lscale(mydata)];
                             otherwise
                                 disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
                         end

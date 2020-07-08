@@ -1,17 +1,17 @@
 
-dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-%dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
+%dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
+dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
 fname_input = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 
 includedspeeds={'both','slow','fast'};%
-sp = 1;
-subjectnumbers = 1;
+sp = 2;
+subjectnumbers = 4;
 s=1; %This is here to make loops later
 load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
 
 includedchannels = [1:6:126 127:134]; % [] for all, otherwise this is a vector of channel numbers
 
-kval = 10;% %Choose number of folds.
+kval = 9;% %Choose number of folds.
 dotrainandtest = false; % If running on test as well as train
 
 selectedclassifier = {'linSVMmuli'};
@@ -64,7 +64,7 @@ partitionedModel = crossval(trainedClassifier,'CVPartition',cpart);
 validationAccuracy = 1 - kfoldLoss(partitionedModel);%, 'LossFun', 'ClassifError');
 fprintf('\nValidation accuracy = %.2f%%\n', validationAccuracy*100);
 trainconchart = confusionchart(traindata.labels,validationPredictions);
-trainconchart.NormalizedValues
+trainconchart.NormalizedValues;
 validationAccuracy = sum(traindata.labels==validationPredictions)./length(traindata.labels);
 fprintf('\nValidation accuracy = %.2f%%\n', validationAccuracy*100);
 
