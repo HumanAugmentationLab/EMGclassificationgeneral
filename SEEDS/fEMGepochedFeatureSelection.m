@@ -70,7 +70,7 @@ includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t25
 w.totaltimewindow = [2000 4000]; %start and stop in ms. If timepoints don't line up, this will select a slightly later time
 w.timewindowbinsize = 2000; %This should ideally divide into an equal number of time points
 w.timewindowoverlap = 0; %Overlap of the time windows
-dfabinsize = [25 50 100 200 500 1000 2000];
+dfabinsize = [273 315 585 819 1365];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%            Preprocessing settings           %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
