@@ -1,4 +1,4 @@
-function [L] = lscale(X);
+function [L] = lscale(X)
 %L-Scale calculations
 %   L-scale is a calculation based on l-moments (second l-moment). Useful
 %   because it is less effected by outliers then other data features. In
