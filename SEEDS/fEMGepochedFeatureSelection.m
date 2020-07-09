@@ -10,9 +10,9 @@ if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
     %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
-    %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
+    dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
-    dir_input = my_dir; %can use this once you have made your own enviornment file and run it
+    %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
@@ -28,7 +28,7 @@ fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 3;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 4;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -64,7 +64,7 @@ includedspeeds = {'both','slow','fast'};
 % end
 
 includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
-        'rms', 'iemg','mmav1','mpv','var', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp', 'lscale', 'dfa'};
+        'rms', 'iemg','mmav1','mpv','var', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp', 'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'mnf'};
 
 % Time windows and overlap (when breaking window up into multiple bins)
 w.totaltimewindow = [2000 4000]; %start and stop in ms. If timepoints don't line up, this will select a slightly later time
@@ -331,10 +331,6 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues wamp_sum'];
                             case 'aac' %average amplitude change, sometimes known as difference absolute mean value (DAMV) (Kim et al., 2011);
                                 fvalues = [fvalues sum(abs(diff(mydata)))'./size(mydata,1)];
-                                % Declans code to discuss
-                                %delta_amp = gradient(mydata');
-                                %acc = mean(delta_amp, 2);
-                                %fvalues = [fvalues acc];
                             case 'zeros'
                                 zcd = dsp.ZeroCrossingDetector;
                                 fvalues = [fvalues zcd(mydata)'];
@@ -342,6 +338,24 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues lscale(mydata)'];
                             case 'dfa'
                                 fvalues = [fvalues DFAfunc(mydata,dfabinsize)];
+                            case 'wl' %waveform lenth
+                                fvalues = [fvalues sum(abs(diff(mydata)))];
+                            case 'm2' %second order moment
+                                fvalues = [fvalues sum((diff(mydata)).^2)];
+                            case 'damv' %difference absolute mean value
+                                fvalues = [fvalues (sum(abs((diff(mydata)).^2)))/(N-1)];
+                            case 'dasdv' %difference absolute standard deviation value
+                                fvalues = [fvalues sqrt(sum(((diff(mydata)).^2))/N-1)];
+                            case 'dvarv' %differecne variance value
+                                fvalues = [fvalues (sum((diff(mydata)).^2))/(N-2)];
+                            case 'msr' %mean value of square root 
+                                fvalues = [fvalues mean(sqrt(mydata))];
+                            case 'ld' %log detector
+                                fvalues = [fvalues exp(sum(log(mydata))/N)];
+                            case 'mnf' %mean frequency
+                                fvalues = [fvalues meanfreq(mydata)]; 
+                              
+                                
                             otherwise
                                 disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
                         end
