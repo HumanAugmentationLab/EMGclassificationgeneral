@@ -10,9 +10,9 @@ if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
     %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
-    dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
+    %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
-    %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
+    dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
@@ -22,13 +22,13 @@ save_output = true; % True if you want to save a features file
 dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
-fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
+fname_output = '-mobTest'; %Tag for file name (follows subject name)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 4;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 3;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -57,11 +57,11 @@ includedspeeds = {'both','slow','fast'};
 if strcmp(fname_output,'-allfeatures') %The list below should be updated to include all possible features
     includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
         'rms', 'iemg','mmav1','mpv','var', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp',...
-        'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'mnf', 'stdv', 'skew', 'mavs'};
+        'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'mnf', 'stdv', 'skew', 'kurt', 'mavs', 'mob'};
 elseif strcmp(fname_output,'-SEEDSfeatures')
     includedfeatures = {'mav', 'var', 'rms', 'zeros', 'aac'}; %features included in SEEDS paper 
 else %This list can be manually set to whatever you want, make sure you choose an appropriate fname_output above
-    includedfeatures = {'rms','var','mpv'};
+    includedfeatures = {'mob'};
 end
 
 % Time windows and overlap (when breaking window up into multiple bins)
@@ -268,7 +268,7 @@ for s=1:length(subjectnumbers)
                         %timewindow, and selected indices (train/test and
                         %conditions)
                         mydata = squeeze(EEG.data(ch,timewindowepochidx,idxt)); 
-
+                        mytimes = EEG.times(timewindowepochidx);
                         % Note: because we're looping through multiple time
                         % bins, it's important to  check the size of the
                         % features going into fvalues. Should be trials x
@@ -356,8 +356,14 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues std(mydata)];
                             case 'skew' %skewness
                                 fvalues = [fvalues skewness(mydata)];
+                            case 'kurt' %kurtosis
+                                fvalues = [fvalues kurtosis(mydata)];
                             case 'mavs' %mean absolute value slope
-                                fvalues = [fvalues diff(mean(abs(mydata)))};
+                                fvalues = [fvalues diff(mean(abs(mydata)))];
+                            case 'mob' %Hjorth mobility
+                                vardxdt = var(gradient(mydata)./gradient(mytimes)');
+                                mob = (sqrt(vardxdt./(var(mydata))))';
+                                fvalues = [fvalues mob];
                             otherwise
                                 disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
                         end
