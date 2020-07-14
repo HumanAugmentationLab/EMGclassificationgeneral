@@ -18,8 +18,8 @@ end
 
 save_output = true; % True if you want to save a features file
 %dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-%dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
-dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\'; %Maya's
+dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
+%dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)

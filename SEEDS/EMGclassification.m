@@ -1,11 +1,11 @@
 
-dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-%dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
+%dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
+dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
 fname_input = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 
 includedspeeds={'both','slow','fast'};%
 sp = 2;
-subjectnumbers = 1;
+subjectnumbers = 4;
 s=1; %This is here to make loops later
 load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
 
