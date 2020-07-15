@@ -8,15 +8,14 @@
 ch_corr(includedfeatures, traindata)
 
 function [corr_mat] = ch_corr(includedfeatures, traindata)
+corr_mat = zeros(134,134,134);
 for n = 1:length(includedfeatures)
     idx_feat = contains(traindata.Properties.VariableNames, includedfeatures(n));
     predictorNames = traindata.Properties.VariableNames(idx_feat);
     %extract traindata for all channels feature n
     predictors = traindata(:,predictorNames);
     %print correlation matrix
-    corr_mat = corr(double(table2array(predictors)));
-    n
-    figure
+    corr_mat(:,:,n) = corr(double(table2array(predictors)));
     imagesc(corr_mat)
     colorbar
 end
