@@ -3,20 +3,31 @@
 all_features = ; %need a full list of the features and channels
 
 classification_accuracy = 0;
-kept_features = []; %empty list to hold the features to keep 
+kept_features = []; %empty list to hold the index of features to keep 
+%input includedfeatures(kept_features) to a select data function
 
 %add features
-for n:length(all_features)
+for n = 1:length(all_features)
     kept_features = [kept_features n];
-    c =  ;%run classification code with kept features and return accuracy
+    c =  ;%run classification code with kept features and return accuracy:
+    %select data using includedfeatures(kept_features) TODO: writt a select
+    %data function 
+    %run a classification function that uses selected data and outputs a
+    %classification accuracy 
     if c > classification_accuracy
         classification_accuracy = c ; 
     else 
+        kept_features(end) = []; %removes last value
         %remove n from kept features
+    end
+end
         
         
 %subtrace features in verse order
-for n:length(kept_features)
+for n = length(kept_features):-1:1
+    
+    
+end 
     
 
     
