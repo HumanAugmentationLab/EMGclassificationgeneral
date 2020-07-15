@@ -1,18 +1,11 @@
 %% 
-% Function makes a correlation matrix of all features for each channel.
-% Then, takes the mean of correlation coefficients across channels for each
-% feature. The output is a correlation matrix of this mean of correlation
-% coefficients. 
-
-% If 2 features are highly correlated, we can see what happens to our
-% classification accuracy when we remove one of them. Theoretically, our
-% classification accuracy should not decrease significantly/ should stay
-% about the same. This helps us decrease the computational cost. 
+% make correlation matrix of features for each channel and then average 
+%the correlation matrices.
 % 
 % Rishita Sarin (07/14/2020)
 %%
 
-feat_corr(includedchannels, traindata) %calls function below
+feat_corr(includedchannels, traindata)
 
 function [meancorrmat] = feat_corr(includedchannels, traindata)
 
@@ -34,5 +27,5 @@ xticks([1 2 3 4 5]); %temporary fix for #features - ideally would like to have n
 yticks([1 2 3 4 5]); %same as x tick
 ylabel('FEATURES');
 c = colorbar;
-c.Label.String = 'Correlation Coefficient';
+c.Label.String = 'Correlation Coefficient' %label of colorbar scale so that correlation matrix makes sense
 end
