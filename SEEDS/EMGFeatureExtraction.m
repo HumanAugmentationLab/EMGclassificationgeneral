@@ -18,11 +18,11 @@ end
 
 save_output = true; % True if you want to save a features file
 %dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
-%dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\'; %Maya's
+%dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
+dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
-fname_output = '-mobTest'; %Tag for file name (follows subject name)
+fname_output = '-featTest'; %Tag for file name (follows subject name)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -57,11 +57,11 @@ includedspeeds = {'both','slow','fast'};
 if strcmp(fname_output,'-allfeatures') %The list below should be updated to include all possible features
     includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
         'rms', 'iemg','mmav1','mpv','var', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp',...
-        'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'mnf', 'stdv', 'skew', 'kurt', 'mavs', 'mob'};
+        'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'meanfreq', 'stdv', 'skew', 'kurt', 'mavs', 'mob'};
 elseif strcmp(fname_output,'-SEEDSfeatures')
     includedfeatures = {'mav', 'var', 'rms', 'zeros', 'aac'}; %features included in SEEDS paper 
 else %This list can be manually set to whatever you want, make sure you choose an appropriate fname_output above
-    includedfeatures = {'mob'};
+    includedfeatures = {'wamp'};
 end
 
 % Time windows and overlap (when breaking window up into multiple bins)
@@ -312,21 +312,27 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[110 256])'];
                             case 'bp256t512'
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[256 512])'];
-                            case 'medianfreq' %TODO: check this code. real after median? are these the right dims?
-                                fvalues = [fvalues real(median(fft(mydata,'',1)))];
+                            case 'medianfreq' %median normalized frequency
+                                %TODO: check this code. real after median? are these the right dims?
+                                %fvalues = [fvalues (real(median(fft(mydata,'',1))))'];
                                 %fvalues = [fvalues squeeze(real(median(fft(EEG.data(ch,timewindowepochidx,idxt), '', 2), 2)))];
+                                fvalues = [fvalues medfreq(mydata)]; %Added 7/15/20
+                            case 'meanfreq' %mean normalized frequency
+                                fvalues = [fvalues meanfreq(mydata)]; 
                             case 'mfl' %code double checked by Rishita on 7/6/2020
                                 fvalues = [fvalues real(log10(sqrt(sum(diff(mydata).^2))))'];
                                 %fvalues = [fvalues squeeze(real(log10(sqrt(sum(diff(EEG.data(ch,timewindowepochidx,idxt)).^2, 2)))))];
                             case 'wamp' % Wilson Amplitude %TODO: check this code
                                 % There is almost definitely a better way to do
                                 % this.
-                                threshold = 0.05;
-                                shifted = circshift(mydata,1,1);
-                                wamp_sum = sum(abs(mydata) + threshold < abs(shifted));
+                                %threshold = 0.05;
+                                %shifted = circshift(mydata,1,1);
+                                %wamp_sum = sum(abs(mydata) + threshold < abs(shifted));
                                 %shifted = circshift(EEG.data(ch,timewindowepochidx, idxt), 1, 2);
                                 %wamp_sum = sum(abs(EEG.data(ch,timewindowepochidx, idxt)) + threshold < (abs(shifted)), 2);
-                                fvalues = [fvalues wamp_sum'];
+                                threshold = 0.05;
+                                wamp = sum((abs(diff(mydata)))>threshold);
+                                fvalues = [fvalues wamp'];
                             case 'aac' %average amplitude change, sometimes known as difference absolute mean value (DAMV) (Kim et al., 2011);
                                 fvalues = [fvalues sum(abs(diff(mydata)))'./size(mydata,1)];
                             case 'zeros'
@@ -350,8 +356,6 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues mean(sqrt(mydata))];
                             case 'ld' %log detector
                                 fvalues = [fvalues exp(sum(log(mydata))/N)];
-                            case 'mnf' %mean frequency
-                                fvalues = [fvalues meanfreq(mydata)]; 
                             case 'stdv' %standard deviation
                                 fvalues = [fvalues std(mydata)];
                             case 'skew' %skewness
