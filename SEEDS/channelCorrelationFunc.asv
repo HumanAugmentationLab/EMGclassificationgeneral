@@ -1,31 +1,33 @@
 %% 
-% This code iterates through each feature and creates a correlation matrix for 
-% all channels for any given feature. 
+% Function iterates through each feature and creates a correlation matrix for 
+% all channels for this given feature.Then, takes the mean of correlation 
+% coefficients across features for each channel. The output is a correlation
+% matrix of this mean of correlation coefficients. 
+
+% If 2 channels are highly correlated, we can see what happens to our
+% classification accuracy when we remove one of them. Theoretically, our
+% classification accuracy should not decrease significantly/ should stay
+% about the same. This helps us decrease the computational cost. 
 % 
 % Rishita Sarin (07/14/2020)
 %%
 
-ch_corr(includedfeatures, traindata)
+ch_corr(includedfeatures, traindata) %calls function below
 
 function [meancorrmat] = ch_corr(includedfeatures, traindata)
-for n = 1:length(includedfeatures)
-    idx_feat = contains(traindata.Properties.VariableNames, includedfeatures(n));
-    predictorNames = traindata.Properties.VariableNames(idx_feat);
-    %extract traindata for all channels feature n
-    predictors = traindata(:,predictorNames);
-    %print correlation matrix
-    corr_mat(:,:,n) = corr(double(table2array(predictors)));
-    meancorrmat = mean(corr_mat,3)
-%     figure
-    imagesc(meancorrmat)
-    title('Mean Correlation Matrix of All Channels')
-    xlabel('channels')
-    ylabel('channels')
-    subtitle(' After iterating through each feature, a correlation matrix for all channels for any given feature is created..
-    This is the mean for the 
-    c = colorbar
-    c.Label.String = 'Correlation Coefficient'
+for n = 1:length(includedfeatures) %iterate through features
+    idx_feat = contains(traindata.Properties.VariableNames, includedfeatures(n)); %find index where the feature exists in traindata
+    predictorNames = traindata.Properties.VariableNames(idx_feat); %for each feature, take all channels
+    predictors = traindata(:,predictorNames);  %extract traindata for all channels with feature n
+    corr_mat(:,:,n) = corr(double(table2array(predictors))); %correlation matrix (size = #channels x #channels x #features that we have looped through)
 end
+meancorrmat = mean(corr_mat,3) %mean of corr coeffs for all channels across  measured (size = #features x #features x 1)
+imagesc(meancorrmat)
+title('Mean correlation matrix of all Channels')
+xlabel('channels')
+ylabel('channels')
+c = colorbar
+c.Label.String = 'Correlation Coefficient'
 end
 
 
