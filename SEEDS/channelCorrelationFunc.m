@@ -7,18 +7,21 @@
 
 ch_corr(includedfeatures, traindata)
 
-function [corr_mat] = ch_corr(includedfeatures, traindata)
+function [meancorrmat] = ch_corr(includedfeatures, traindata)
 for n = 1:length(includedfeatures)
     idx_feat = contains(traindata.Properties.VariableNames, includedfeatures(n));
     predictorNames = traindata.Properties.VariableNames(idx_feat);
     %extract traindata for all channels feature n
     predictors = traindata(:,predictorNames);
     %print correlation matrix
-    corr_mat = corr(double(table2array(predictors)));
-    n
-    figure
-    imagesc(corr_mat)
-    colorbar
+    corr_mat(:,:,n) = corr(double(table2array(predictors)));
+    meancorrmat = mean(corr_mat,3)
+    imagesc(meancorrmat)
+    title('Mean correlation matrix of all Channels')
+    xlabel('channels')
+    ylabel('channels')
+    c = colorbar
+    c.Label.String = 'Correlation Coefficient'
 end
 end
 
