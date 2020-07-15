@@ -3,10 +3,11 @@
 % all channels for any given feature. 
 % 
 % Rishita Sarin (07/14/2020)
-
-%ch_corr(includedfeatures, traindata)
 %%
-%function [correlation_matrix] = ch_corr(feature_list, traindata)
+
+ch_corr(includedfeatures, traindata)
+
+function [correlation_matrix] = ch_corr(includedfeatures, traindata)
 for n = 1:length(includedfeatures)
     idx_feat = contains(traindata.Properties.VariableNames, includedfeatures(n));
     predictorNames = traindata.Properties.VariableNames(idx_feat);
@@ -18,6 +19,6 @@ for n = 1:length(includedfeatures)
     imagesc(correlation_matrix)
     colorbar
 end
-%end
+end
 
 
