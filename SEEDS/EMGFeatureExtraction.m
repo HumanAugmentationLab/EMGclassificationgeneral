@@ -10,9 +10,9 @@ if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
     %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
-    dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
+    %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
-    %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
+    dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
@@ -22,17 +22,17 @@ save_output = true; % True if you want to save a features file
 dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
-<<<<<<< HEAD
+% <<<<<<< HEAD
 fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
-=======
-fname_output = '-featTest'; %Tag for file name (follows subject name)
->>>>>>> a68d50f04f4143b561202e476d5c1c06e185dfe1
+% =======
+fname_output = '-allfeatures'; %Tag for file name (follows subject name)
+% >>>>>>> a68d50f04f4143b561202e476d5c1c06e185dfe1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 4;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 3;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -320,9 +320,9 @@ for s=1:length(subjectnumbers)
                                 %TODO: check this code. real after median? are these the right dims?
                                 %fvalues = [fvalues (real(median(fft(mydata,'',1))))'];
                                 %fvalues = [fvalues squeeze(real(median(fft(EEG.data(ch,timewindowepochidx,idxt), '', 2), 2)))];
-                                fvalues = [fvalues medfreq(mydata)]; %Added 7/15/20
+                                fvalues = [fvalues (medfreq(mydata))']; %Added 7/15/20
                             case 'meanfreq' %mean normalized frequency
-                                fvalues = [fvalues meanfreq(mydata)]; 
+                                fvalues = [fvalues (meanfreq(mydata))']; 
                             case 'mfl' %code double checked by Rishita on 7/6/2020
                                 fvalues = [fvalues real(log10(sqrt(sum(diff(mydata).^2))))'];
                                 %fvalues = [fvalues squeeze(real(log10(sqrt(sum(diff(EEG.data(ch,timewindowepochidx,idxt)).^2, 2)))))];
@@ -347,27 +347,30 @@ for s=1:length(subjectnumbers)
                             case 'dfa'
                                 fvalues = [fvalues DFAfunc(mydata,dfabinsize)];
                             case 'wl' %waveform length
-                                fvalues = [fvalues sum(abs(diff(mydata)))];
+                                fvalues = [fvalues (sum(abs(diff(mydata))))'];
                             case 'm2' %second order moment
-                                fvalues = [fvalues sum((diff(mydata)).^2)];
+                                fvalues = [fvalues (sum((diff(mydata)).^2))'];
                             case 'damv' %difference absolute mean value
-                                fvalues = [fvalues mean(abs(diff(mydata)))];
+                                fvalues = [fvalues (mean(abs(diff(mydata)))')];
                             case 'dasdv' %difference absolute standard deviation value
-                                fvalues = [fvalues sqrt(mean((diff(mydata)).^2))];
+                                fvalues = [fvalues (sqrt(mean((diff(mydata)).^2)))'];
                             case 'dvarv' %difference variance value
-                                fvalues = [fvalues (sum((diff(mydata)).^2))/(N-2)];
+                                fvalues = [fvalues ((sum((diff(mydata)).^2))/(size(mydata,1)-2))'];
                             case 'msr' %mean value of square root 
-                                fvalues = [fvalues mean(sqrt(mydata))];
+                                fvalues = [fvalues (mean(sqrt(mydata)))'];
                             case 'ld' %log detector
-                                fvalues = [fvalues exp(mean(log(abs(mydata))))];
+                                fvalues = [fvalues (exp(mean(log(abs(mydata)))))'];
                             case 'stdv' %standard deviation
-                                fvalues = [fvalues std(mydata)];
+                                fvalues = [fvalues (std(mydata))'];
                             case 'skew' %skewness
-                                fvalues = [fvalues skewness(mydata)];
+                                fvalues = [fvalues (skewness(mydata))'];
                             case 'kurt' %kurtosis
-                                fvalues = [fvalues kurtosis(mydata)];
+                                fvalues = [fvalues (kurtosis(mydata))'];
                             case 'mavs' %mean absolute value slope
-                                fvalues = [fvalues diff(mean(abs(mydata)))];
+                                fvalues = [fvalues (diff(mean(abs(mydata))))'];
+                                %7/16/20 Having issues since diff() outputs
+                                %one value less than necessary
+                                
                             case 'mob' %Hjorth mobility
                                 vardxdt = var(gradient(mydata)./gradient(mytimes)');
                                 mob = (sqrt(vardxdt./(var(mydata))))';

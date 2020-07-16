@@ -22,7 +22,11 @@ save_output = true; % True if you want to save a features file
 dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
-fname_output = '-featTest'; %Tag for file name (follows subject name)
+% <<<<<<< HEAD
+fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
+% =======
+fname_output = '-allfeatures'; %Tag for file name (follows subject name)
+% >>>>>>> a68d50f04f4143b561202e476d5c1c06e185dfe1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -316,9 +320,9 @@ for s=1:length(subjectnumbers)
                                 %TODO: check this code. real after median? are these the right dims?
                                 %fvalues = [fvalues (real(median(fft(mydata,'',1))))'];
                                 %fvalues = [fvalues squeeze(real(median(fft(EEG.data(ch,timewindowepochidx,idxt), '', 2), 2)))];
-                                fvalues = [fvalues medfreq(mydata)]; %Added 7/15/20
+                                fvalues = [fvalues (medfreq(mydata))']; %Added 7/15/20
                             case 'meanfreq' %mean normalized frequency
-                                fvalues = [fvalues meanfreq(mydata)]; 
+                                fvalues = [fvalues (meanfreq(mydata))']; 
                             case 'mfl' %code double checked by Rishita on 7/6/2020
                                 fvalues = [fvalues real(log10(sqrt(sum(diff(mydata).^2))))'];
                                 %fvalues = [fvalues squeeze(real(log10(sqrt(sum(diff(EEG.data(ch,timewindowepochidx,idxt)).^2, 2)))))];
@@ -337,33 +341,35 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues sum(abs(diff(mydata)))'./size(mydata,1)];
                             case 'zeros'
                                 zcd = dsp.ZeroCrossingDetector;
-                                fvalues = [fvalues zcd(mydata)'];
+                                fvalues = [fvalues double(zcd(mydata))'];
                             case 'lscale'
                                 fvalues = [fvalues lscale(mydata)'];
                             case 'dfa'
                                 fvalues = [fvalues DFAfunc(mydata,dfabinsize)];
                             case 'wl' %waveform length
-                                fvalues = [fvalues sum(abs(diff(mydata)))];
+                                fvalues = [fvalues (sum(abs(diff(mydata))))'];
                             case 'm2' %second order moment
-                                fvalues = [fvalues sum((diff(mydata)).^2)];
+                                fvalues = [fvalues (sum((diff(mydata)).^2))'];
                             case 'damv' %difference absolute mean value
-                                fvalues = [fvalues mean(abs(diff(mydata)))];
+                                fvalues = [fvalues (mean(abs(diff(mydata)))')];
                             case 'dasdv' %difference absolute standard deviation value
-                                fvalues = [fvalues sqrt(mean((diff(mydata)).^2))];
+                                fvalues = [fvalues (sqrt(mean((diff(mydata)).^2)))'];
                             case 'dvarv' %difference variance value
-                                fvalues = [fvalues (sum((diff(mydata)).^2))/(N-2)];
+                                fvalues = [fvalues ((sum((diff(mydata)).^2))/(size(mydata,1)-2))'];
                             case 'msr' %mean value of square root 
-                                fvalues = [fvalues mean(sqrt(mydata))];
+                                fvalues = [fvalues (mean(sqrt(mydata)))'];
                             case 'ld' %log detector
-                                fvalues = [fvalues exp(mean(log(abs(mydata))))];
+                                fvalues = [fvalues (exp(mean(log(abs(mydata)))))'];
                             case 'stdv' %standard deviation
-                                fvalues = [fvalues std(mydata)];
+                                fvalues = [fvalues (std(mydata))'];
                             case 'skew' %skewness
-                                fvalues = [fvalues skewness(mydata)];
+                                fvalues = [fvalues (skewness(mydata))'];
                             case 'kurt' %kurtosis
-                                fvalues = [fvalues kurtosis(mydata)];
+                                fvalues = [fvalues (kurtosis(mydata))'];
                             case 'mavs' %mean absolute value slope
-                                fvalues = [fvalues diff(mean(abs(mydata)))];
+                                fvalues = [fvalues (diff(mean(abs(mydata))))'];
+                                %7/16/20 Having issues since diff() results
+                                
                             case 'mob' %Hjorth mobility
                                 vardxdt = var(gradient(mydata)./gradient(mytimes)');
                                 mob = (sqrt(vardxdt./(var(mydata))))';
