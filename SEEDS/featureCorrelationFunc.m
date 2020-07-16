@@ -12,9 +12,9 @@
 % Rishita Sarin (07/14/2020)
 %%
 
-feat_corr(includedchannels, traindata) %calls function below
+feat_corr(includedchannels, includedfeatures, traindata) %calls function below
 
-function [meancorrmat] = feat_corr(includedchannels, traindata)
+function [meancorrmat] = feat_corr(includedchannels, includedfeatures, traindata)
 
 %find all channels and name them
 names_ch = cellstr([repmat('_ch',length(includedchannels),1)  num2str(includedchannels') repmat('_',length(includedchannels),1) ]); 
@@ -28,11 +28,16 @@ for n = 1:length(includedchannels) %iterate through channels
 end
 meancorrmat = mean(corr_mat,3); %mean of corr coeffs for all features across channels measured (size = #features x #features x 1)
 imagesc(meancorrmat) %visual of mean correlation matrix 
-title('Mean correlation matrix of all Features');
+title('Mean correlation matrix of SEEDS Features');
 xlabel('FEATURES');
 xticks([1 2 3 4 5]); %temporary fix for #features - ideally would like to have name of feature as a tick. 
 yticks([1 2 3 4 5]); %same as x tick
 ylabel('FEATURES');
 c = colorbar;
+caxis([-1 1]); %limits for colorbar
 c.Label.String = 'Correlation Coefficient';
+xticks(1:length(includedfeatures));
+xticklabels(includedfeatures);% Label x axis
+yticks(1:length(includedfeatures));
+yticklabels(includedfeatures);% Label y axis
 end
