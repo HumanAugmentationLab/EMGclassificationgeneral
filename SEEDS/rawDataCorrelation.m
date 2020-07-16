@@ -118,7 +118,7 @@ for s=1:length(subjectnumbers)
         if isempty(condnames)
             condnames = cellstr(availableeventlabels);
         end
-        %condnames = cellstr('thumbFlex');
+        
         
         idxtrials = [];
             for c = 1:length(condnames)
