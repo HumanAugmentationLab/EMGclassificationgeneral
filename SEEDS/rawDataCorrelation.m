@@ -118,7 +118,7 @@ for s=1:length(subjectnumbers)
         if isempty(condnames)
             condnames = cellstr(availableeventlabels);
         end
-        condnames = cellstr('thumbFlex');
+        %condnames = cellstr('thumbFlex');
         
         idxtrials = [];
         if isempty(condnames)
@@ -127,26 +127,25 @@ for s=1:length(subjectnumbers)
             for c = 1:length(condnames)
                 condname = condnames{c};
                 idxtrials = find(EEG.epochlabelscat==condname);
+                corrMat = [];
                 for t = 1:length(idxtrials)
                     corrMatTemp = (corr((EEG.data(:,:,idxtrials(t)))'));
                     if t == 1
                         corrMat = corrMatTemp;
-                     else
+                    else
                         corrMat = cat(3, corrMat, corrMatTemp); 
                     end
                 end
+                meanCorrMat = mean(corrMat,3);
+                figure
+                imagesc(meanCorrMat(:,:,1)); % plot the matrix
+                set(gca, 'XTick', 1:size(meanCorrMat,1)); % center x-axis ticks on bins
+                set(gca, 'YTick', 1:size(meanCorrMat,1)); % center y-axis ticks on bins
+                title(strcat('Mean Correlation of Raw Data Channels for  condname', condname), 'FontSize', 14); % set title
+                colormap('jet'); % set the colorscheme
+                %colorbar on; % enable colorbar
+
             end
         end
     end
 end
-
-figure
-imagesc(corrMat(:,:,1))
-title('Mean correlation matrix of all Features');
-xlabel('FEATURES');
-xticks([1 2 3 4 5]); %temporary fix for #features - ideally would like to have name of feature as a tick. 
-yticks([1 2 3 4 5]); %same as x tick
-ylabel('FEATURES');
-c = colorbar;
-c.Label.String = 'Correlation Coefficient';
-c = colorbar;
