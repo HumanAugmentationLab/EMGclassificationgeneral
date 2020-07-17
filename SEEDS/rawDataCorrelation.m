@@ -115,17 +115,20 @@ for s=1:length(subjectnumbers)
 
         %make an array of all possible labels of events in your data
         availableeventlabels = unique(EEG.epochlabelscat);
+        condnames = [] %default forms correlation matricies for all conditions, 
+                       %choose specific labels from availableventlabels if necessary
+        
         if isempty(condnames)
             condnames = cellstr(availableeventlabels);
         end
         
-        
+        %Correlation matricies being calculated
         idxtrials = [];
-            for c = 1:length(condnames)
+            for c = 1:length(condnames)%This loops through each condition
                 condname = condnames{c};
                 idxtrials = find(EEG.epochlabelscat==condname);
                 corrMat = [];
-                for t = 1:length(idxtrials)
+                for t = 1:length(idxtrials)%This loops through each trial in a given condition
                     corrMatTemp = (corr((EEG.data(:,:,idxtrials(t)))'));
                     if t == 1
                         corrMat = corrMatTemp;
@@ -133,16 +136,20 @@ for s=1:length(subjectnumbers)
                         corrMat = cat(3, corrMat, corrMatTemp); 
                     end
                 end
-                meanCorrMat = mean(corrMat,3);
-                figure
+                meanCorrMat = mean(corrMat,3);%Average correlation matrix in a given condition
+                
+                figure %comment out all of this to only get the total matrix
                 imagesc(meanCorrMat(:,:,1)); % plot the matrix
                 set(gca, 'XTick', 1:size(meanCorrMat,1)); % center x-axis ticks on bins
                 set(gca, 'YTick', 1:size(meanCorrMat,1)); % center y-axis ticks on bins
+                set(gca, 'XTickLabel', EEG.chanlocs.labels); % set x-axis labels
+                set(gca, 'YTickLabel', EEG.chanlocs.labels); % set y-axis labels
                 title(strcat('Mean Correlation of Raw Data Channels for ,', condname), 'FontSize', 14); % set title
                 colormap('jet'); % set the colorscheme
-                %colorbar on; % enable colorbar
-                if c == 1
-                    totalCorrMat = corrMat;
+                colorbar; % enable colorbar
+                
+                if c == 1  % Concantenates the matricies from every trial
+                    totalCorrMat = corrMat; %totalCorrMat will only include matricies from the conditions included in condnames
                 else
                     totalCorrMat = cat(3, totalCorrMat, corrMat);
                 end
@@ -152,9 +159,11 @@ for s=1:length(subjectnumbers)
             imagesc(meanCorrMat(:,:,1)); % plot the matrix
             set(gca, 'XTick', 1:size(meanCorrMat,1)); % center x-axis ticks on bins
             set(gca, 'YTick', 1:size(meanCorrMat,1)); % center y-axis ticks on bins
+            set(gca, 'XTickLabel', EEG.chanlocs.labels); % set x-axis labels
+            set(gca, 'YTickLabel', EEG.chanlocs.labels); % set y-axis labels
             title('Mean Correlation of Raw Data Channels for All Conditions', 'FontSize', 14); % set title
             colormap('jet'); % set the colorscheme
-            %colorbar on; % enable colorbar
+            colorbar; % enable colorbar
         end
     end
 
