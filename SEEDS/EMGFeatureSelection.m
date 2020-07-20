@@ -1,6 +1,7 @@
 % Feature Selection by adding features and checking accuracy 
 
-all_features = traindata.Properties.VariableNames(:,3:end); %all the feature names from the traindata data set (does not include first 2 variables bc they are not features)
+
+all_features = ;
 
 accuracy = 0;
 kept_features = []; %empty list to hold the index of features to keep 
@@ -8,11 +9,15 @@ kept_features = []; %empty list to hold the index of features to keep
 
 selectedclassifier = {'linSVMmuli'};
 
+
+response = traindata(:,'labels'); %labels
+
 %add features
 for n = 1:length(all_features)
     kept_features = [kept_features n];
-    [selected_data, predictorNames] = select_data(kept_features);
-    c =  accuracy(selected_data, selectedclassifier, predictorNames);%run classification code with kept features and return accuracy:
+    predictorNames = select_data(kept_features);
+    predictors = traindata(:,predictorNames);
+    c =  accuracy(selectedclassifier, predictors, response);%run classification code with kept features and return accuracy:
     %select data using includedfeatures(kept_features) TODO: writt a select
     %data function 
     %run a classification function that uses selected data and outputs a

@@ -1,10 +1,9 @@
-function [predictorNames] = selected_data(traindata, includedfeatures, includedchannels)
+function [data, predictorNames] = selected_data(includedfeatures, includedchannels)
 %Select Data: input a list of the indices of features to included in the classification
 %and return a matrix that only includes the data of the included features
 %   Detailed explanation goes here
 
-%make includedchannels optional to add
-
+%make includedchannels
     if isempty(includedchannels)
         % Include all features
         idx_feat = contains(traindata.Properties.VariableNames,'FEAT_'); % Find all of ones that start with FEAT_

@@ -1,4 +1,4 @@
-function [accuracy] = classification_accuracy(traindata, selectedclassifier, predictorNames)
+function [accuracy] = classification_accuracy(selectedclassifier, predictors, response, traindata)
 %findes the classification accuracy with a given set of training data, a
 %classifier, and the predictor names. Returns the accuracy as a decimal.
 %   Detailed explanation goes here
@@ -7,8 +7,6 @@ function [accuracy] = classification_accuracy(traindata, selectedclassifier, pre
 kval = 9;
 
 % Predictors are features
-predictors = traindata(:,predictorNames); %This is the X
-response = traindata(:,'labels'); %labels
 cpart = cvpartition(response{:,1},'KFold',kval); % k-fold stratified cross validation
 
 
@@ -25,7 +23,7 @@ partitionedModel = crossval(trainedClassifier,'CVPartition',cpart);
      
 
 % Cross validation output
-validationAccuracy = sum(traindata.labels==validationPredictions)./length(traindata.labels);
+validationAccuracy = sum(traindata.labels==validationPredictions)./length(traindata.labels); %can I replace traindata with something I am already passing in or do I have to pass in train data too?
 accuracy = validationAccuracy;
 end
 
