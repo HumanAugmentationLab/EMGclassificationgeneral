@@ -6,8 +6,8 @@ includedchannels = [1:6:126 127:134];
 selectedclassifier = {'linSVMmuli'};
 response = traindata(:,'labels'); %labels
 
-variablenames = traindata.Properties.VariableNames;
-predictorNames = select_data(variablenames, includedfeatures, includedchannels);
+variablenames = traindata.P
+predictorNames = select_data(traindata, includedfeatures, includedchannels);
 predictors = traindata(:,predictorNames);
 
 
