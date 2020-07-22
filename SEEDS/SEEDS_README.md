@@ -1,3 +1,4 @@
+# EMGclasificationgeneral - SEEDS
 DFAfunc.m - Detrended Fluctuation Analysis Feature Function
 
 EMGClassificationwithFunctions.m  - EMG Classification using classification_accurcy function.
