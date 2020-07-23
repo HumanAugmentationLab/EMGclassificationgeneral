@@ -1,21 +1,28 @@
 % Feature Selection by adding features and checking accuracy 
 
-all_features = traindata.Properties.VariableNames(:,3:end); %all the feature names from the traindata data set (does not include first 2 variables bc they are not features)
+
+all_features = traindata.Properties.VariableNames
 
 accuracy = 0;
-kept_features = []; %empty list to hold the index of features to keep 
+kept_features = {}; %empty list to hold the index of features to keep 
 %input includedfeatures(kept_features) to a select data function
 
+includedfeatures = {'mav', 'var', 'rms', 'zeros', 'aac'};
+includedchannels = [1:6:126 127:134];
 selectedclassifier = {'linSVMmuli'};
-
-predictors = traindata(:,predictorNames); %This is the X
 response = traindata(:,'labels'); %labels
+
+kval = 9;
+% Predictors are features
+cpart = cvpartition(response{:,1},'KFold',kval); % k-fold stratified cross validation
+
 
 %add features
 for n = 1:length(all_features)
-    kept_features = [kept_features n];
-    [selected_data, predictorNames] = select_data(kept_features);
-    c =  accuracy(selected_data, selectedclassifier, predictorNames);%run classification code with kept features and return accuracy:
+    kept_features{end+1} = all_frn;
+    predictorNames = select_data(kept_features, includedfeatures, includedchannels);
+    predictors = traindata(:,predictorNames);
+    c =  accuracy(selectedclassifier, predictors, response, cpart);%run classification code with kept features and return accuracy:
     %select data using includedfeatures(kept_features) TODO: writt a select
     %data function 
     %run a classification function that uses selected data and outputs a
