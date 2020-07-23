@@ -22,7 +22,7 @@ for n = 1:length(all_features)
     kept_features{end+1} = all_features{n};
     predictorNames = select_data(kept_features, includedfeatures, includedchannels);
     predictors = traindata(:,predictorNames);
-    c =  accuracy(selectedclassifier, predictors, response, cpart);%run classification code with kept features and return accuracy:
+    c =  classification_accuracy(selectedclassifier, predictors, response, cpart);%run classification code with kept features and return accuracy:
     %select data using includedfeatures(kept_features) TODO: writt a select
     %data function 
     %run a classification function that uses selected data and outputs a
