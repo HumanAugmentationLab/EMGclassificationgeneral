@@ -30,8 +30,8 @@ meancorrmat = mean(corr_mat,3); %mean of corr coeffs for all features across cha
 imagesc(meancorrmat) %visual of mean correlation matrix 
 title('Mean correlation matrix of SEEDS Features');
 xlabel('FEATURES');
-xticks([1 2 3 4 5]); %temporary fix for #features - ideally would like to have name of feature as a tick. 
-yticks([1 2 3 4 5]); %same as x tick
+set(gca, 'XTick', 1:size(meancorrmat)); % center x-axis ticks
+set(gca, 'YTick', 1:size(meancorrmat)); % center y-axis ticks
 ylabel('FEATURES');
 c = colorbar;
 caxis([-1 1]); %limits for colorbar
