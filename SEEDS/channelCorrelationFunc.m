@@ -24,15 +24,17 @@ end
 meancorrmat = mean(corr_mat,3); %mean of corr coeffs for all channels across features measured (size = #channels x #channels x 1)
 imagesc(meancorrmat) %visual of mean correlation matrix
 title('Mean correlation matrix of all Channels (SEEDS)');
-xlabel('channels');
-ylabel('channels');
 c = colorbar;
 caxis([-1 1]); %limits for colorbar
 c.Label.String = 'Correlation Coefficient';
-xticks(1:length(includedchannels));
-xticklabels(includedchannels);% Label x axis
-yticks(1:length(includedchannels));
-yticklabels(includedchannels);% Label y axis
+xlabel('channels');
+xticks(1:length(includedchannels)); %number of ticks
+xticklabels(includedchannels);% Label of each tick - don't know if this makes a real difference or not
+yticks(1:length(includedchannels)); 
+yticklabels(includedchannels);
+ylabel('channels');
+xtickangle(90); %rotate x ticks 90 degrees to make them legible
+set(gca,'FontSize', 8) %decrease font size to make the resultant figure more legible
 end
 
 
