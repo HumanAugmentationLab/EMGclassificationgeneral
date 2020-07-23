@@ -9,6 +9,7 @@ for s=1:length(subjectnumbers) %Loop through all subjects
     subj_data = load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'.mat'));
     includedsubjects = {includedsubjects subj_data}; %make cell array of all the subject data
 end 
+
 for n = 1:length(includedsubjects) % Loop through all subjects 
     feat_corr(includedchannels, includedfeatures, traindata) %For each subject, call featureCorrelationFunc.m
     corr_mat(:,:,n) = meancorrmat;
