@@ -12,32 +12,20 @@
 % Rishita Sarin (07/14/2020)
 %%
 
-feat_corr(includedchannels, includedfeatures, traindata) %calls function below
+%feat_corr(includedchannels, includedfeatures, traindata) %calls function below
 
-function [meancorrmat] = feat_corr(includedchannels, includedfeatures, traindata)
+function [meancorrmat] = featureCorrelationFunc(includedchannels, includedfeatures, traindata)
 
-%find all channels and name them
-names_ch = cellstr([repmat('_ch',length(includedchannels),1)  num2str(includedchannels') repmat('_',length(includedchannels),1) ]); 
-names_ch = strrep(names_ch,' ','');%remove spaces in single digit channel names (ch_ 1 --> ch_1)
+    %find all channels and name them
+    names_ch = cellstr([repmat('_ch',length(includedchannels),1)  num2str(includedchannels') repmat('_',length(includedchannels),1) ]); 
+    names_ch = strrep(names_ch,' ','');%remove spaces in single digit channel names (ch_ 1 --> ch_1)
 
-for n = 1:length(includedchannels) %iterate through channels
-    idx_ch = contains(traindata.Properties.VariableNames,names_ch(n)); %find index where the channel exists in traindata
-    predictorNames = traindata.Properties.VariableNames(idx_ch); %for each channel, take all features
-    predictors = traindata(:,predictorNames); %extract data of predictorNames from traindata
-    corr_mat(:,:,n) = corr(double(table2array(predictors))); %correlation matrix (size = #features x #features x #channels that we have looped through)
-end
-meancorrmat = mean(corr_mat,3); %mean of corr coeffs for all features across channels measured (size = #features x #features x 1)
-imagesc(meancorrmat) %visual of mean correlation matrix 
-title('Mean correlation matrix of SEEDS Features');
-xlabel('FEATURES');
-set(gca, 'XTick', 1:size(meancorrmat)); % center x-axis ticks
-set(gca, 'YTick', 1:size(meancorrmat)); % center y-axis ticks
-ylabel('FEATURES');
-c = colorbar;
-caxis([-1 1]); %limits for colorbar
-c.Label.String = 'Correlation Coefficient';
-xticks(1:length(includedfeatures));
-xticklabels(includedfeatures);% Label x axis
-yticks(1:length(includedfeatures));
-yticklabels(includedfeatures);% Label y axis
+    for n = 1:length(includedchannels) %iterate through channels
+        idx_ch = contains(traindata.Properties.VariableNames,names_ch(n)); %find index where the channel exists in traindata
+        predictorNames = traindata.Properties.VariableNames(idx_ch); %for each channel, take all features
+        predictors = traindata(:,predictorNames); %extract data of predictorNames from traindata
+        corr_mat(:,:,n) = corr(double(table2array(predictors))); %correlation matrix (size = #features x #features x #channels that we have looped through)
+    end
+    meancorrmat = mean(corr_mat,3); %mean of corr coeffs for all features across channels measured (size = #features x #features x 1)
+
 end
