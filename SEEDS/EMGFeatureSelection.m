@@ -1,6 +1,5 @@
 % Feature Selection by adding features and checking accuracy 
 
-
 all_features = traindata.Properties.VariableNames;
 
 accuracy = 0;
@@ -18,11 +17,11 @@ cpart = cvpartition(response{:,1},'KFold',kval); % k-fold stratified cross valid
 
 
 %add features
-for n = 1:length(all_features)
-    kept_features{end+1} = all_features{n};
-    predictorNames = select_data(kept_features, includedfeatures, includedchannels);
+for n = 1:length(includedfeatures)
+    kept_features{end+1} = includedfeatures{n};
+    predictorNames = select_data(all_features, kept_features, includedchannels);
     predictors = traindata(:,predictorNames);
-    c =  accuracy(selectedclassifier, predictors, response, cpart);%run classification code with kept features and return accuracy:
+    c =  classification_accuracy(selectedclassifier, predictors, response, cpart);%run classification code with kept features and return accuracy:
     %select data using includedfeatures(kept_features) TODO: writt a select
     %data function 
     %run a classification function that uses selected data and outputs a
@@ -43,7 +42,7 @@ for n = length(kept_features):-1:1
 end 
 
 %print included features
-fprintf('\naccuracy = %.2f%%\n', validationAccuracy*100); %print accuracy
+fprintf('\naccuracy = %.2f%%\n', c*100); %print accuracy
 
     
 
