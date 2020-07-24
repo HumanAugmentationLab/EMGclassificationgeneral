@@ -1,4 +1,4 @@
-function [] = plot_feat_corr(corrmat,includedfeatures, graphTitle, label, varargin)
+function [] = plot_feat_corr(corrmat,ticks, graphTitle, label, varargin)
 if length(varargin) == 1
     subj = num2str(varargin{1});
 else
@@ -15,8 +15,8 @@ ylabel(label');
 c = colorbar;
 caxis([-1 1]); %limits for colorbar
 c.Label.String = 'Correlation Coefficient';
-xticks(1:length(includedfeatures));
-xticklabels(includedfeatures);% Label x axis
-yticks(1:length(includedfeatures));
-yticklabels(includedfeatures);% Label y axis
+xticks(1:length(ticks));
+xticklabels(ticks);% Label x axis
+yticks(1:length(ticks));
+yticklabels(ticks);% Label y axis
 end
