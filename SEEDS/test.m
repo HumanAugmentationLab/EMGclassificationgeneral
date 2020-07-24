@@ -1,8 +1,3 @@
-indexkeep = []
-includedspeeds
-for n = 1:length(EEG.data)
-    if EEG.speeds(n) == includedspeeds(1)
-        indexkeep = [indexkeep n]
-    end
+for n = length(kept_features):-1:1
+    kept_features{n}
 end 
-
