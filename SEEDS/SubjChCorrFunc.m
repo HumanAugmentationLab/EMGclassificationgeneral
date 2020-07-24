@@ -9,8 +9,8 @@ for s = 1:length(includedsubjectnumbers) %iterate through each subject
     load(strcat(dir_input,'subj',num2str(includedsubjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'),'traindata') %load data for the subject
     corr_mat(:,:,s) = channelCorrelationFunc(includedfeatures, includedchannels, traindata) ; %For each subject, call channelCorrelationFunc.m
     figure %to ensure we don't delete our old figure each time the loop runs
-    plot_feat_corr(corr_mat(:,:,s),includedchannels,'Mean Correlation Matrix for SEEDS Features', 'Channels', includedsubjectnumbers(s)); %input subject number if you want this in the title
+    plot_corr(corr_mat(:,:,s),includedchannels,'Mean Correlation Matrix for SEEDS Features', 'Channels', includedsubjectnumbers(s)); %input subject number if you want this in the title
 end
 meansubjcorrmat = mean(corr_mat,3); %mean of corr coeffs for all features across channels measured (size = #features x #features x 1)
 figure
-plot_feat_corr(meansubjcorrmat,includedfeatures)
+plot_corr(meansubjcorrmat,includedfeatures)
