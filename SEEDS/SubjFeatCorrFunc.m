@@ -1,9 +1,11 @@
-dir_input = 'C:\Users\rsarin\Google Drive\ArmEMG\Data\SEEDS\FeaturesSubj\';
+%dir_input = 'C:\Users\rsarin\Google Drive\ArmEMG\Data\SEEDS\FeaturesSubj\';
 %dir_input = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\';
-fname_input = '-SEEDSfeatures'; %Tag for file name (follows subject name)
+dir_input = 'C:\Users\msivanandan\Google Drive\ArmEMG\Data\SEEDS\FeaturesSubj\';
+%fname_input = '-SEEDSfeatures'; %Tag for file name (follows subject name)
+fname_output = '-allfeatures';
 includedspeeds={'both','slow','fast'}; %cell array of all speeds
 sp = 1 %speed we want to examine
-includedsubjectnumbers = [1 2 5]; %total number of subjects we will examine. This is a temporary fix. I want Matlab to calculate this.
+includedsubjectnumbers = [1 2 3 5 9]; %total number of subjects we will examine. This is a temporary fix. I want Matlab to calculate this.
 
 for s = 1:length(includedsubjectnumbers) %iterate through each subject  
     load(strcat(dir_input,'subj',num2str(includedsubjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'),'traindata') %load data for the subject
