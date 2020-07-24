@@ -1,5 +1,4 @@
 # EMGclasificationgeneral
-DFAFunc.m - Detrended Fluctuation Analysis Feature Fuction.
 
 FractalDim.m - Fractal Dimension Feature Function.
 
