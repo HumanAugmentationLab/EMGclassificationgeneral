@@ -71,9 +71,8 @@ function DFA = DFAfunc(mydata, windowvector)
             end
             
             for loop = 1:(floor(w.totaltimewindow(2)/windowvector(bin)))
-                
                 %Calculates a second-order least squares fit of the data in each bin
-                coeff(loop,:,trial) = polyfit(xval,epochTrial(1:(windowvector(bin)),loop,trial), 2);
+                coeff(loop,:,trial) = polyfit(xval',epochTrial(1:(windowvector(bin)),loop,trial), 2);
                 
                 %Takes the estimate of each data point based on its least-squares polyfit
                 singleYn = polyval(coeff(loop,:,trial), xval);
