@@ -26,10 +26,6 @@ Select_data.m -  Input a list of the indices of features to be included in the c
 
 subjFeatCorrFunc.m  - For each subject data, call featureCorrelationFunc. Then, store the correlation matrix for each subject data and take the average across all the subjects to give a feature x feature correlation matrix.
 
-Test.m - idk
-
 EMGclassification.m - compare this wih emgfeatextract 
 
 EnviornmentSetUp.m - we should all update this with our links?
-
-FeatureCorrelationMatrix.m - does declan still want this?
