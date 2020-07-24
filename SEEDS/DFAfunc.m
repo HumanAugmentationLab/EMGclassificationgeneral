@@ -8,7 +8,15 @@ function DFA = DFAfunc(mydata, windowvector)
 
     yk = (cumsum((mydata)-mean(mydata))); %cumulative sum of the difference between each data point
                    
-    [dataPoints, trialNum] = size(yk);
+    [dim1, dim2] = size(yk);
+    
+    if dim1 > dim2
+        dataPoints = dim1;
+        trialNum = dim2;
+    else
+        dataPoints = dim2;
+        trialNum = dim1;
+    end
                                     
     w.totaltimewindow = [1 dataPoints];
     w.timewindowoverlap = 0; %no overlap needed for DFA
