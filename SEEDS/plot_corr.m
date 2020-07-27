@@ -19,4 +19,5 @@ xticks(1:length(ticks));
 xticklabels(ticks);% Label x axis
 yticks(1:length(ticks));
 yticklabels(ticks);% Label y axis
+xtickangle(75); %rotate x axis ticks to avoid collision
 end
