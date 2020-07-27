@@ -12,7 +12,7 @@ includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t25
 includedspeeds={'both','slow','fast'}; %cell array of all speeds
 sp = 1 %speed we want to examine
 includedsubjectnumbers = [1 2 3 4 5 9]; %total number of subjects we will examine. This is a temporary fix. I want Matlab to calculate this.
-includedchannels = [1:6:126 127:134];
+includedchannels = [127:134];
 
 
 
@@ -24,4 +24,4 @@ for s = 1:length(includedsubjectnumbers) %iterate through each subject
 end
 meansubjcorrmat = mean(corr_mat,3); %mean of corr coeffs for all features across channels measured (size = #features x #features x 1)
 figure
-plot_corr(real(meansubjcorrmat),includedfeatures, 'Mean Correlation Matrix For SEEDS Features', 'FEATURES')
+plot_corr(real(meansubjcorrmat),includedfeatures, 'Mean Correlation Matrix For All Features', 'FEATURES')
