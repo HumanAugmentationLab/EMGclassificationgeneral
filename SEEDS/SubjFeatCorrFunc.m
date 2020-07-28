@@ -11,8 +11,8 @@ includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t25
         'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'meanfreq', 'stdv', 'skew', 'kurt', 'mob'};
 includedspeeds={'both','slow','fast'}; %cell array of all speeds
 sp = 1 %speed we want to examine
-includedsubjectnumbers = [1 2 3 4 5 9]; %total number of subjects we will examine. This is a temporary fix. I want Matlab to calculate this.
-includedchannels = [127:134];
+includedsubjectnumbers = [1:9]; %total number of subjects we will examine. This is a temporary fix. I want Matlab to calculate this.
+includedchannels = [127:134]; %1:134 for all channels, 127:134 for only monopolar EMG sensors
 
 
 
