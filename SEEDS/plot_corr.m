@@ -5,6 +5,7 @@ else
     subj = ' For All Subjects';
 end
 load('./colormapjetwhite.mat','cmapwj');
+figure
 colormap(cmapwj); % set colormap
 imagesc(corrmat) %visual of mean correlation matrix 
 title([graphTitle subj] );

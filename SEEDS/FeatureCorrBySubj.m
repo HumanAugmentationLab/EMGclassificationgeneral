@@ -33,9 +33,8 @@ for s = 1:length(includedsubjectnumbers) %iterate through each subject
     corr_mat(:,:,s) = featureCorrelationFunc(includedchannels, traindata(:,predictorNames)); %For each subject, call featureCorrelationFunc.m
     
     % Comment out below if you only want to make the average plot
-    %figure %to ensure we don't delete our old figure each time the loop runs
     %plot_corr(corr_mat(:,:,s),includedfeatures, 'Mean Correlation Matrix For All Features', 'FEATURES', includedsubjectnumbers(s)); %input subject number if you want this in the title
 end
 meansubjcorrmat = mean(corr_mat,3); %mean of corr coeffs for all features across channels measured (size = #features x #features x 1)
-figure
+
 plot_corr(meansubjcorrmat,includedfeatures, 'Mean Correlation Matrix For All Features', 'FEATURES')

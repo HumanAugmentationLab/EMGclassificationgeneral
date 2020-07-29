@@ -34,7 +34,7 @@ fname_output = '-rawDataConfMatrix'; %Tag for file name (follows subject name)
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 1; %[3 8 9];%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 5; %[3 8 9];%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -138,8 +138,8 @@ for s=1:length(subjectnumbers)
                 end
                 meanCorrMat = mean(corrMat,3);%Average correlation matrix in a given condition
                 
-                figure %comment out all of this to only get the total matrix
-                plot_corr(meanCorrMat(:,:,1), EEG.chanlocs.labels, strcat('Mean Correlation of Raw Data Channels for ,', condname), [], subjectnumbers(s))
+                %comment out all of this to only get the total matrix
+                %plot_corr(meanCorrMat(:,:,1), EEG.chanlocs.labels, strcat('Mean Correlation of Raw Data Channels for ,', condname), [], subjectnumbers(s))
 
                 if c == 1  % Concantenates the matricies from every trial
                     totalCorrMat = corrMat; %totalCorrMat will only include matricies from the conditions included in condnames
@@ -148,8 +148,7 @@ for s=1:length(subjectnumbers)
                 end
             end
             meanTotalMat = mean(totalCorrMat,3);
-            figure
-            plot_corr(meanTotalMat(:,:,1), EEG.chanlocs.labels, 'Mean Correlation of Raw Data Channels for All Cond', [], subjectnumbers(s))
+            plot_corr(meanTotalMat(:,:,1), cellstr(EEG.chanlocs.labels), 'Mean Correlation of Raw Data Channels for All Cond', [], subjectnumbers(s))
         end
         
         if s == 1  % Concantenates the matricies from every trial
@@ -160,6 +159,5 @@ for s=1:length(subjectnumbers)
     end
 
     meanSubjMat = mean(allSubjCorrMat,3);
-    figure
-    plot_corr(meanSubjMat(:,:,1), EEG.chanlocs.labels, 'Mean Correlation of Raw Data Channels for All Cond', [])
+    plot_corr(meanSubjMat(:,:,1), cellstr(EEG.chanlocs.labels), 'Mean Correlation of Raw Data Channels for All Cond', 'Channels')
 
