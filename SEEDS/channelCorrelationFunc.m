@@ -12,14 +12,14 @@
 % Rishita Sarin (07/14/2020)
 %%
 
-function [meancorrmat] = channelCorrelationFunc(includedfeatures, includedchannels, traindata)
+function [meancorrmat] = channelCorrelationFunc(includedfeatures, traindata)
 for n = 1:length(includedfeatures) %iterate through features
-    idx_feat = contains(traindata.Properties.VariableNames, includedfeatures(n)); %find index where the feature exists in traindata
+    idx_feat = contains(traindata.Properties.VariableNames, strcat('_',includedfeatures{n})); %find index where the feature exists in traindata
     predictorNames = traindata.Properties.VariableNames(idx_feat); %for each feature, take all channels
     predictors = traindata(:,predictorNames);  %extract traindata for all channels with feature n
     corr_mat(:,:,n) = corr(double(table2array(predictors))); %correlation matrix (size = #channels x #channels x #features that we have looped through)
 end
-meancorrmat = mean(corr_mat,3) %mean of corr coeffs for all channels across features measured (size = #channels x #channels x 1)
+meancorrmat = mean(corr_mat,3); %mean of corr coeffs for all channels across features measured (size = #channels x #channels x 1)
 end
 
 

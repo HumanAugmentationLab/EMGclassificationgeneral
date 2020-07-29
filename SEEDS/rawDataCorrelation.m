@@ -13,28 +13,28 @@ load_data = true; %True if you want to load the data from the folder below, fals
 if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
-    %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
+    dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
     %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
-    dir_input = my_dir; %can use this once you have made your own enviornment file and run it
+    %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
-save_output = true; % True if you want to save a features file
-%dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
+save_output = false; %true; % True if you want to save a features file
+dir_output = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
 %dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
 dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 
 fname_output = '-rawDataConfMatrix'; %Tag for file name (follows subject name)
-% >>>>>>> a68d50f04f4143b561202e476d5c1c06e185dfe1
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 3;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 5; %[3 8 9];%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -43,7 +43,7 @@ condnames =  []; %{"DOWN pressed", "SPACE pressed"};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% Channel, features, and time window settings %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-includedchannels = [];%1:2; %channels to included, this will calculate features for each separately 
+includedchannels = [];%1:134; %channels to included, this will calculate features for each separately 
 %(if you have cross channel features, you need to write something in to
 %skip in order to avoid repeat features)
 % [] for all channels
@@ -138,16 +138,9 @@ for s=1:length(subjectnumbers)
                 end
                 meanCorrMat = mean(corrMat,3);%Average correlation matrix in a given condition
                 
-                figure %comment out all of this to only get the total matrix
-                imagesc(meanCorrMat(:,:,1)); % plot the matrix
-                set(gca, 'XTick', 1:size(meanCorrMat,1)); % center x-axis ticks on bins
-                set(gca, 'YTick', 1:size(meanCorrMat,1)); % center y-axis ticks on bins
-                set(gca, 'XTickLabel', EEG.chanlocs.labels); % set x-axis labels
-                set(gca, 'YTickLabel', EEG.chanlocs.labels); % set y-axis labels
-                title(strcat('Mean Correlation of Raw Data Channels for ,', condname), 'FontSize', 14); % set title
-                colormap('jet'); % set the colorscheme
-                colorbar; % enable colorbar
-                
+                %comment out all of this to only get the total matrix
+                %plot_corr(meanCorrMat(:,:,1), EEG.chanlocs.labels, strcat('Mean Correlation of Raw Data Channels for ,', condname), [], subjectnumbers(s))
+
                 if c == 1  % Concantenates the matricies from every trial
                     totalCorrMat = corrMat; %totalCorrMat will only include matricies from the conditions included in condnames
                 else
@@ -155,15 +148,16 @@ for s=1:length(subjectnumbers)
                 end
             end
             meanTotalMat = mean(totalCorrMat,3);
-            figure
-            imagesc(meanCorrMat(:,:,1)); % plot the matrix
-            set(gca, 'XTick', 1:size(meanCorrMat,1)); % center x-axis ticks on bins
-            set(gca, 'YTick', 1:size(meanCorrMat,1)); % center y-axis ticks on bins
-            set(gca, 'XTickLabel', EEG.chanlocs.labels); % set x-axis labels
-            set(gca, 'YTickLabel', EEG.chanlocs.labels); % set y-axis labels
-            title('Mean Correlation of Raw Data Channels for All Conditions', 'FontSize', 14); % set title
-            colormap('jet'); % set the colorscheme
-            colorbar; % enable colorbar
+            plot_corr(meanTotalMat(:,:,1), cellstr(EEG.chanlocs.labels), 'Mean Correlation of Raw Data Channels for All Cond', [], subjectnumbers(s))
         end
+        
+        if s == 1  % Concantenates the matricies from every trial
+            allSubjCorrMat = totalCorrMat; %totalCorrMat will only include matricies from the conditions included in condnames
+        else
+            allSubjCorrMat = cat(3, allSubjCorrMat, totalCorrMat);
+        end    
     end
+
+    meanSubjMat = mean(allSubjCorrMat,3);
+    plot_corr(meanSubjMat(:,:,1), cellstr(EEG.chanlocs.labels), 'Mean Correlation of Raw Data Channels for All Cond', 'Channels')
 

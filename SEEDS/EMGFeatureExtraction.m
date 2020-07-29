@@ -10,28 +10,29 @@ if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
     %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
-    %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
+    dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
-    dir_input = my_dir; %can use this once you have made your own enviornment file and run it
+    %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
 save_output = true; % True if you want to save a features file
 %dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Sam's 
-%dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
-dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
+%dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
+dir_output = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's Google
+%dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 % <<<<<<< HEAD
-%fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
-fname_output = '-allfeatures'; %Tag for file name (follows subject name)
+fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
+%fname_output = '-allfeatures'; %Tag for file name (follows subject name)
 %fname_output = '-testingMAVS'; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 9;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 4;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -283,7 +284,7 @@ for s=1:length(subjectnumbers)
                             case 'iemg'
                                 fvalues = [fvalues sum(abs(mydata))'];
                             case 'ssi' %TODO: fix so not same as iemg or exclude
-                                fvalues = [fvalues squeeze(sum(abs(EEG.data(ch,timewindowepochidx,idxt)), 2))];
+                                fvalues = [fvalues sum((mydata).^2)];
                                 % This could instead be done with the integral, which gives a smaller but correlated number if rectified
                                 %ctr = squeeze(cumtrapz(EEG.timessec(timewindowepochidx), abs(EEG.data(ch,timewindowepochidx,idxt))));
                                 %fvalues = ctr(end,:)'; % This could be useful if you
