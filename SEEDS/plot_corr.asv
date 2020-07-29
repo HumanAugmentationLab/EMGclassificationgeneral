@@ -1,0 +1,29 @@
+function [] = plot_corr(corrmat,ticks, graphTitle, label, varargin)
+if length(varargin) == 1
+    subj = [' For Subj ' num2str(varargin{1})];
+else
+    subj = ' For All Subjects';
+end
+load('./colormapjetwhite.mat','cmapwj');
+colormap(cmapwj); % set colormap
+imagesc(corrmat) %visual of mean correlation matrix 
+title([graphTitle subj] );
+xlabel(label);
+ylabel(label);
+c = colorbar;
+caxis([-1 1]); %limits for colorbar
+c.Label.String = 'Correlation Coefficient';
+
+numticks = size(corrmat);
+if numticks > 100 % If there are too many ticks, reduce this to half for readability
+    numticks = ceil(size(corrmat)./2);
+end
+
+set(gca, 'XTick', 1:size(corrmat)); % center x-axis ticks
+set(gca, 'YTick', 1:size(corrmat)); % center y-axis ticks
+xticks(1:length(ticks));
+xticklabels(ticks);% Label x axis
+yticks(1:length(ticks));
+yticklabels(ticks);% Label y axis
+xtickangle(75); %rotate x axis ticks to avoid collision
+end
