@@ -284,7 +284,7 @@ for s=1:length(subjectnumbers)
                             case 'iemg'
                                 fvalues = [fvalues sum(abs(mydata))'];
                             case 'ssi' %TODO: fix so not same as iemg or exclude
-                                fvalues = [fvalues squeeze(sum(abs(EEG.data(ch,timewindowepochidx,idxt)), 2))];
+                                fvalues = [fvalues sum((mydata).^2)];
                                 % This could instead be done with the integral, which gives a smaller but correlated number if rectified
                                 %ctr = squeeze(cumtrapz(EEG.timessec(timewindowepochidx), abs(EEG.data(ch,timewindowepochidx,idxt))));
                                 %fvalues = ctr(end,:)'; % This could be useful if you
