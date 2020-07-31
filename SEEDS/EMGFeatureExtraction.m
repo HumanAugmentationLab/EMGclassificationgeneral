@@ -24,15 +24,15 @@ dir_output = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\Feat
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 % <<<<<<< HEAD
-fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
-%fname_output = '-allfeatures'; %Tag for file name (follows subject name)
+%fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
+fname_output = '-allfeatures'; %Tag for file name (follows subject name)
 %fname_output = '-testingMAVS'; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 4;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 6;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
