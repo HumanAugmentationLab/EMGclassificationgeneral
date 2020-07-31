@@ -1,11 +1,11 @@
 
 %dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's 
-fname_input = '-SEEDSfeatures'; %Tag for file name (follows subject name)
+dir_input = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's 
+fname_input = '-allfeatures'; %Tag for file name (follows subject name)
 
 includedspeeds={'both','slow','fast'};%
 sp = 2;
-subjectnumbers = 4;
+subjectnumbers = 6;
 s=1; %This is here to make loops later
 load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
 
@@ -113,16 +113,16 @@ for f = 1:length(includedfeatures)
 
     % Cross validation output
     validationAccuracy = 1 - kfoldLoss(partitionedModel);%, 'LossFun', 'ClassifError');
-    %fprintf('\nValidation accuracy = %.2f%%\n', validationAccuracy*100);
+    fprintf('\nValidation accuracy = %.2f%%\n', validationAccuracy*100);
     trainconchart = confusionchart(traindata.labels,validationPredictions);
     trainconchart.NormalizedValues;
     validationAccuracy = sum(traindata.labels==validationPredictions)./length(traindata.labels);
-    %fprintf('\nValidation accuracy = %.2f%%\n', validationAccuracy*100);
+    fprintf('\nValidation accuracy = %.2f%%\n', validationAccuracy*100);
     
     acc_includedfeatures(f) = validationAccuracy;
 
 end
-acc_includedfeatures
+
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
