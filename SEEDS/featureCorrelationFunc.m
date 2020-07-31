@@ -14,7 +14,7 @@
 
 %feat_corr(includedchannels, includedfeatures, traindata) %calls function below
 
-function [meancorrmat] = featureCorrelationFunc(includedchannels, includedfeatures, traindata)
+function [meancorrmat] = featureCorrelationFunc(includedchannels, traindata)
 
     %find all channels and name them
     names_ch = cellstr([repmat('_ch',length(includedchannels),1)  num2str(includedchannels') repmat('_',length(includedchannels),1) ]); 
