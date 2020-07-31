@@ -1,4 +1,5 @@
-function [HMob] = Mobility(X)
+function [HMob] = Mobility(mydata, mytimes)
 % Hjorth's Mobility Parameter
-HMob = sqrt((var(diff(X)))./(var(X)));
+vardxdt = var(gradient(mydata)./gradient(mytimes)');
+HMob = (sqrt(vardxdt./(var(mydata))))';
 end
