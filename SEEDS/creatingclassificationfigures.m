@@ -43,7 +43,7 @@ accuracy_table = table(includedfeatures', acc', 'VariableNames', {'Feature', 'Ac
 sorted_table = sortrows(accuracy_table, 2, 'descend'); %sort the rows of the accuracy
 
 %Create figure of accuracy as features get added 
-sorted_features = table2array(sorted_table(:,1))'
+sorted_features = table2array(sorted_table(:,1))';
 
 included_features = [];
 accuracy = [];
