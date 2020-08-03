@@ -61,7 +61,8 @@ includedspeeds = {'both','slow','fast'};
 if strcmp(fname_output,'-allfeatures') %The list below should be updated to include all possible features
     includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
         'rms', 'iemg','mmav1','mpv','var', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp',...
-        'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'meanfreq', 'stdv', 'skew', 'kurt', 'mob'};
+        'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'meanfreq', 'stdv', 'skew', 'kurt', 'Hmob',...
+        'hcom', 'mfp', 'stdpk', 'np'};
 elseif strcmp(fname_output,'-SEEDSfeatures')
     includedfeatures = {'mav', 'var', 'rms', 'zeros', 'aac'}; %features included in SEEDS paper 
 else %This list can be manually set to whatever you want, make sure you choose an appropriate fname_output above
@@ -273,6 +274,7 @@ for s=1:length(subjectnumbers)
                         %conditions)
                         mydata = squeeze(EEG.data(ch,timewindowepochidx,idxt)); 
                         mytimes = EEG.times(timewindowepochidx);
+                        freqdata = abs(fft(mydata));
                         % Note: because we're looping through multiple time
                         % bins, it's important to  check the size of the
                         % features going into fvalues. Should be trials x
@@ -290,7 +292,13 @@ for s=1:length(subjectnumbers)
                                 %fvalues = ctr(end,:)'; % This could be useful if you
                                 %wanted to take the diff between different increments.
                             case 'mpv'
-                                fvalues = [fvalues max(mydata)'];
+                                mpv = [];
+                                [row, col] = find(mydata > rms(mydata)); %index of peaks
+                                for n = 1:size(mydata,2)      
+                                    mpv(n) = mean(mydata(row(col==n),n));
+                                end
+                                fvalues = [fvalues mpv];
+                                
                             case 'mav' %mean absolute value
                                 fvalues = [fvalues mean(abs(mydata))'];
                             case 'mmav1'
@@ -366,10 +374,27 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues (skewness(mydata))'];
                             case 'kurt' %kurtosis
                                 fvalues = [fvalues (kurtosis(mydata))'];
-                            case 'mob' %Hjorth mobility
-                                vardxdt = var(gradient(mydata)./gradient(mytimes)');
-                                mob = (sqrt(vardxdt./(var(mydata))))';
-                                fvalues = [fvalues mob];
+                            case 'Hmob' %Hjorth mobility
+                                fvalues = [fvalues Mobility(mydata, mytimes)];
+                            case 'hcom' %Hjorth Complexity
+                                HCom = Mobility((gradient(mydata)./gradient(mytimes)'), mytimes)./(Mobility(mydata, mytimes));
+                                fvalues = [fvalues HCom];
+                            case 'mfp' %mean frequency peak
+                                [row, col] = find(freqdata > rms(freqdata)); 
+                                for n = 1:size(freqdata,2)      
+                                    mfp(n) = mean(freqdata(row(col==n),n));
+                                end
+                                fvalues = [fvalues mfp];
+                            case 'stdpk'%standard deviation of peaks
+                                [row, col] = find(freqdata > rms(freqdata)); 
+                                for n = 1:size(freqdata,2)      
+                                    stdpk(n) = std(freqdata(row(col==n),n));
+                                end
+                                fvalues = [fvalues stdpk];
+                            case 'np' %number of peaks
+                                np = sum(mydata > rms(mydata), 1);
+                                fvalues = [fvalues np];
+                                
                             otherwise
                                 disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
                         end
