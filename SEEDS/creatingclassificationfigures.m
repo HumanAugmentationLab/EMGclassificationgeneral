@@ -7,7 +7,7 @@ fname_input = '-allfeatures'; %Tag for file name (follows subject name)
 
 includedspeeds={'both','slow','fast'};%
 sp = 2;
-subjectnumbers = 6;
+subjectnumbers = 4;
 s=1; %This is here to make loops later
 load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
 
