@@ -312,7 +312,7 @@ for s=1:length(subjectnumbers)
                                 for n = 1:size(mydata,2)      
                                     mpv(n) = mean(mydata(row(col==n),n));
                                 end
-                                fvalues = [fvalues mpv];
+                                fvalues = [fvalues mpv'];
                                 
                             
                             case 'mmav1'
@@ -332,7 +332,7 @@ for s=1:length(subjectnumbers)
                             
                             case 'np' %number of peaks
                                 np = sum(mydata > rms(mydata), 1);
-                                fvalues = [fvalues np];
+                                fvalues = [fvalues np'];
                             case 'dasdv' %difference absolute standard deviation value
                                 fvalues = [fvalues sqrt(mean(diff(mydata).^2))'];
                             
