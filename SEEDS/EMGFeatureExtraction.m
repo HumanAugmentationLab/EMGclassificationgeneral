@@ -9,17 +9,17 @@ load_data = true; %True if you want to load the data from the folder below, fals
 if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
-    %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
-    dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
+    dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
+    %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
     %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
 save_output = true; % True if you want to save a features file
-%dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Sam's 
+dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Sam's 
 %dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
-dir_output = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's Google
+%dir_output = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's Google
 %dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
@@ -32,7 +32,7 @@ fname_output = '-allfeatures'; %Tag for file name (follows subject name)
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 6;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 1;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -60,13 +60,13 @@ includedspeeds = {'both','slow','fast'};
 % Subset of features to use
 if strcmp(fname_output,'-allfeatures') %The list below should be updated to include all possible features
     includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
-        'rms', 'iemg','mmav1','mpv','var', 'mav', 'aac', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp',...
-        'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'meanfreq', 'stdv', 'skew', 'kurt', 'Hmob',...
-        'hcom', 'mfp', 'stdpk', 'np'};
+        'rms', 'iemg','mmav1','mpv','var', 'mav', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp',...
+        'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'meanfreq', 'stdv', 'skew', 'kurt',...
+         'np'};
 elseif strcmp(fname_output,'-SEEDSfeatures')
-    includedfeatures = {'mav', 'var', 'rms', 'zeros', 'aac'}; %features included in SEEDS paper 
+    includedfeatures = {'mav', 'var', 'rms', 'zeros', 'damv'}; %features included in SEEDS paper (damv is aac)
 else %This list can be manually set to whatever you want, make sure you choose an appropriate fname_output above
-    includedfeatures = {'mavs'};
+    includedfeatures = {'hcom','Hmob','mfp', 'stdpk',}; %currently things that need fixing
 end
 
 % Time windows and overlap (when breaking window up into multiple bins)
@@ -281,16 +281,31 @@ for s=1:length(subjectnumbers)
                         % feature 
                         % Calcuate actual features by name in loop
                         switch includedfeatures{f}
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                            % Time domain features
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                             case 'rms'
                                 fvalues = [fvalues rms(mydata)'];                   
                             case 'iemg'
                                 fvalues = [fvalues sum(abs(mydata))'];
-                            case 'ssi' %TODO: fix so not same as iemg or exclude
-                                fvalues = [fvalues sum((mydata).^2)];
+                            case 'ssi' % Simple square integral - squared version of iEMG
+                                fvalues = [fvalues sum(mydata.^2)'];
                                 % This could instead be done with the integral, which gives a smaller but correlated number if rectified
                                 %ctr = squeeze(cumtrapz(EEG.timessec(timewindowepochidx), abs(EEG.data(ch,timewindowepochidx,idxt))));
                                 %fvalues = ctr(end,:)'; % This could be useful if you
                                 %wanted to take the diff between different increments.
+                            case 'm2' %second order moment, same as SSI but on the diff
+                                fvalues = [fvalues sum(diff(mydata).^2)'];
+                                
+                            case 'wl' %waveform length (extension of iEMG but based on difference);
+                                fvalues = [fvalues (sum(abs(diff(mydata))))'];  
+                            case 'mav' %mean absolute value
+                                fvalues = [fvalues mean(abs(mydata))'];
+                            case 'damv' %difference absolute mean value - modified version of the MAV but on the difference
+                                fvalues = [fvalues mean(abs(diff(mydata)))'];
+                                %Also known as average amplitude change (aac),  modified to run on the difference, then known as difference absolute mean value (DAMV) (Kim et al., 2011);
+                           
+                            
                             case 'mpv'
                                 mpv = [];
                                 [row, col] = find(mydata > rms(mydata)); %index of peaks
@@ -299,8 +314,7 @@ for s=1:length(subjectnumbers)
                                 end
                                 fvalues = [fvalues mpv];
                                 
-                            case 'mav' %mean absolute value
-                                fvalues = [fvalues mean(abs(mydata))'];
+                            
                             case 'mmav1'
                                 low = prctile(mydata,25,1);
                                 high = prctile(mydata,75,1);
@@ -310,7 +324,37 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues mean(abs(weightedVals))'];
                             case 'var'
                                 fvalues = [fvalues var(mydata)'];
-                            case 'bp2t20'                       
+                            case 'dvarv' %difference variance value
+                                % same as using var func, so using var for
+                                % ease of reading
+                                %fvalues = [fvalues ((sum((diff(mydata)).^2))/(size(mydata,1)-2))'];
+                                fvalues = [fvalues var(diff(mydata))'];
+                            
+                            case 'np' %number of peaks
+                                np = sum(mydata > rms(mydata), 1);
+                                fvalues = [fvalues np];
+                            case 'dasdv' %difference absolute standard deviation value
+                                fvalues = [fvalues sqrt(mean(diff(mydata).^2))'];
+                            
+                            case 'msr' %mean value of square root 
+                                % Note: this deviates from original
+                                % equation by using the abs to avoid
+                                % complex numbers from the sqrt
+                                fvalues = [fvalues (mean(sqrt(abs(mydata))))'];
+                            case 'ld' %log detector
+                                fvalues = [fvalues exp(mean(log(abs(mydata))))'];
+                            case 'stdv' %standard deviation
+                                fvalues = [fvalues (std(mydata))'];
+                            case 'skew' %skewness
+                                fvalues = [fvalues (skewness(mydata))'];
+                            case 'kurt' %kurtosis
+                                fvalues = [fvalues (kurtosis(mydata))'];
+                               
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                            % Frequency domain features
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                            
+                            case 'bp2t20' % Band power                      
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[2 20])'];
                             case 'bp20t40'             
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[20 40])'];
@@ -324,16 +368,38 @@ for s=1:length(subjectnumbers)
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[110 256])'];
                             case 'bp256t512'
                                 fvalues = [fvalues bandpower(mydata,EEG.srate,[256 512])'];
+                            
                             case 'medianfreq' %median normalized frequency
                                 %TODO: check this code. real after median? are these the right dims?
                                 %fvalues = [fvalues (real(median(fft(mydata,'',1))))'];
                                 %fvalues = [fvalues squeeze(real(median(fft(EEG.data(ch,timewindowepochidx,idxt), '', 2), 2)))];
-                                fvalues = [fvalues (medfreq(mydata))']; %Added 7/15/20
+                                fvalues = [fvalues (medfreq(mydata,EEG.srate))']; %Added 7/15/20
                             case 'meanfreq' %mean normalized frequency
-                                fvalues = [fvalues (meanfreq(mydata))']; 
-                            case 'mfl' %code double checked by Rishita on 7/6/2020
-                                fvalues = [fvalues real(log10(sqrt(sum(diff(mydata).^2))))'];
-                                %fvalues = [fvalues squeeze(real(log10(sqrt(sum(diff(EEG.data(ch,timewindowepochidx,idxt)).^2, 2)))))];
+                                fvalues = [fvalues (meanfreq(mydata,EEG.srate))']; 
+                            
+                            
+                            case 'mfp' %mean frequency peak - TODO: REMOVE FROM TOP FOR NOW
+                                % potential error in how freqdata is used
+                                % here - might want the freqs not their
+                                % powers
+                                [row, col] = find(freqdata > rms(freqdata)); 
+                                for n = 1:size(freqdata,2)      
+                                    mfp(n) = mean(freqdata(row(col==n),n));
+                                end
+                                fvalues = [fvalues mfp];
+                            case 'stdpk'%standard deviation of peaks - TODO: REMOVE FROM TOP FOR NOW
+                                % potential error in how freqdata is used
+                                % here - might want the freqs not their
+                                % powers
+                                [row, col] = find(freqdata > rms(freqdata)); 
+                                for n = 1:size(freqdata,2)      
+                                    stdpk(n) = std(freqdata(row(col==n),n));
+                                end
+                                fvalues = [fvalues stdpk];
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                            % Other features
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                            
                             case 'wamp' % Wilson Amplitude %TODO: check this code
                                 % There is almost definitely a better way to do
                                 % this.
@@ -345,55 +411,24 @@ for s=1:length(subjectnumbers)
                                 threshold = 0.05;
                                 wamp = sum((abs(diff(mydata)))>threshold);
                                 fvalues = [fvalues wamp'];
-                            case 'aac' %average amplitude change, sometimes known as difference absolute mean value (DAMV) (Kim et al., 2011);
-                                fvalues = [fvalues sum(abs(diff(mydata)))'./size(mydata,1)];
+                            
+                            case 'Hmob' %Hjorth mobility - TODO: REMOVE FROM TOP FOR NOW
+                                fvalues = [fvalues Mobility(mydata, mytimes)];
+                            case 'hcom' %Hjorth Complexity - TODO: REMOVE FROM TOP FOR NOW
+                                HCom = Mobility((gradient(mydata)./gradient(mytimes)'), mytimes)./(Mobility(mydata, mytimes));
+                                fvalues = [fvalues HCom]; 
+                                
                             case 'zeros'
                                 zcd = dsp.ZeroCrossingDetector;
                                 fvalues = [fvalues double(zcd(mydata))'];
                             case 'lscale'
                                 fvalues = [fvalues lscale(mydata)'];
                             case 'dfa'
-                                fvalues = [fvalues DFAfunc(mydata,dfabinsize)];
-                            case 'wl' %waveform length
-                                fvalues = [fvalues (sum(abs(diff(mydata))))'];
-                            case 'm2' %second order moment
-                                fvalues = [fvalues (sum((diff(mydata)).^2))'];
-                            case 'damv' %difference absolute mean value
-                                fvalues = [fvalues (mean(abs(diff(mydata)))')];
-                            case 'dasdv' %difference absolute standard deviation value
-                                fvalues = [fvalues (sqrt(mean((diff(mydata)).^2)))'];
-                            case 'dvarv' %difference variance value
-                                fvalues = [fvalues ((sum((diff(mydata)).^2))/(size(mydata,1)-2))'];
-                            case 'msr' %mean value of square root 
-                                fvalues = [fvalues (mean(sqrt(mydata)))'];
-                            case 'ld' %log detector
-                                fvalues = [fvalues (exp(mean(log(abs(mydata)))))'];
-                            case 'stdv' %standard deviation
-                                fvalues = [fvalues (std(mydata))'];
-                            case 'skew' %skewness
-                                fvalues = [fvalues (skewness(mydata))'];
-                            case 'kurt' %kurtosis
-                                fvalues = [fvalues (kurtosis(mydata))'];
-                            case 'Hmob' %Hjorth mobility
-                                fvalues = [fvalues Mobility(mydata, mytimes)];
-                            case 'hcom' %Hjorth Complexity
-                                HCom = Mobility((gradient(mydata)./gradient(mytimes)'), mytimes)./(Mobility(mydata, mytimes));
-                                fvalues = [fvalues HCom];
-                            case 'mfp' %mean frequency peak
-                                [row, col] = find(freqdata > rms(freqdata)); 
-                                for n = 1:size(freqdata,2)      
-                                    mfp(n) = mean(freqdata(row(col==n),n));
-                                end
-                                fvalues = [fvalues mfp];
-                            case 'stdpk'%standard deviation of peaks
-                                [row, col] = find(freqdata > rms(freqdata)); 
-                                for n = 1:size(freqdata,2)      
-                                    stdpk(n) = std(freqdata(row(col==n),n));
-                                end
-                                fvalues = [fvalues stdpk];
-                            case 'np' %number of peaks
-                                np = sum(mydata > rms(mydata), 1);
-                                fvalues = [fvalues np];
+                                fvalues = [fvalues DFAfunc(mydata,dfabinsize)];   
+                                
+                            case 'mfl' %code double checked by Rishita on 7/6/2020
+                                fvalues = [fvalues real(log10(sqrt(sum(diff(mydata).^2))))'];
+                                %fvalues = [fvalues squeeze(real(log10(sqrt(sum(diff(EEG.data(ch,timewindowepochidx,idxt)).^2, 2)))))];
                                 
                             otherwise
                                 disp(strcat('unknown feature: ', includedfeatures{f},', skipping....'))
