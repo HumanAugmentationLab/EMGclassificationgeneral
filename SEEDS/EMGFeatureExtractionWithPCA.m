@@ -10,29 +10,29 @@ if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
     %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
-    dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
+    %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
-    %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
+    dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
 save_output = true; % True if you want to save a features file
 %dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Sam's 
 %dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
-dir_output = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's Google
-%dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
+%dir_output = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's Google
+dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 % <<<<<<< HEAD
 %fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 %fname_output = '-allfeatures'; %Tag for file name (follows subject name)
-%fname_output = '-testingMAVS'; 
+fname_output = '-testingMAVS'; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 6;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 3;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -70,15 +70,14 @@ else %This list can be manually set to whatever you want, make sure you choose a
 end
 
 
-
+usePCA = false;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%% Channel Selection PCA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 channelSelection = true;
 
 if channelSelection
-    dataReshape = reshape(EEG.data, 134, []);
-    prComponents = pca(dataReshape');
+
     
     %Feature subset for parameter sweeping
     includedfeatures = {'meanfreq', 'lscale', 'mmav1', 'mpv', 'stdv', 'damv', 'zeros', 'bp40t56'};
@@ -95,34 +94,31 @@ if channelSelection
     %Make sure includedfeatures = {'meanfreq', 'lscale', 'mmav1', 'mpv' 'stdv', 'damv', 'zeros', 'bp40t56'}; 
     %in the else statement/manual list of feature subsets
 
-    ChA = true;
+    ChA = false;
     ChB = false;
-    ChC = false;
+    ChC = true;
     ChD = false;
     ChE = false;
 
     if ChA == true
         fname_output = '-PARAMETERSWEEPfeaturesChA';
         includedchannels = [1:19:126 130];
-    else if ChB == true
-            fname_output = '-PARAMETERSWEEPfeaturesChB';
-            includedchannels = [1:6:126 127:134];
-        else if ChC == true
-                fname_output = '-PARAMETERSWEEPfeaturesChC';
-                usePCA = true;
-                includedchannels = [1:8];
-            else if ChD == true
-                    fname_output = '-PARAMETERSWEEPfeaturesChD';
-                    usePCA = true;
-                    includedchannels = [1:29]; 
-                 else if ChD == true
-                         fname_output = '-PARAMETERSWEEPfeaturesChE';
-                         includedchannels = 
-                     end %ChE
-                end %ChD
-            end %ChC
-        end %ChB
-    end %ChA
+    elseif ChB == true
+        fname_output = '-PARAMETERSWEEPfeaturesChB';
+        includedchannels = [1:6:126 127:134];
+    elseif ChC == true
+        fname_output = '-PARAMETERSWEEPfeaturesChC';
+        usePCA = true;
+        includedchannels = [1:8];
+    elseif ChD == true
+        fname_output = '-PARAMETERSWEEPfeaturesChD';
+        usePCA = true;
+        includedchannels = [1:29]; 
+    elseif ChD == true
+        fname_output = '-PARAMETERSWEEPfeaturesChE';
+        includedchannels = [1:2:134];
+    end %Ch options
+    
 end %channel selection
 
 
@@ -320,6 +316,20 @@ for s=1:length(subjectnumbers)
 
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % Calculate PCA if usePCA = true
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            %Potentially add an 'if exists' search for PCAdata
+            if usePCA
+                    dataReshape = reshape(EEG.data, 134, []);
+                    EEG.PCAcomponents = pca(dataReshape');
+                    for PCAtrialnum = 1:size(EEG.data,3)
+                        EEG.PCAdata(:,:,PCAtrialnum) = EEG.PCAcomponents'*EEG.data(:,:,PCAtrialnum);
+                    end
+                    %EEG.PCAdata is components by data by trial
+            end
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % Add features to the data table
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             for ch = includedchannels %not necessarily a linear index, so be careful
@@ -332,7 +342,11 @@ for s=1:length(subjectnumbers)
                         %mydata is a subset of the data for the channel,
                         %timewindow, and selected indices (train/test and
                         %conditions)
-                        mydata = squeeze(EEG.data(ch,timewindowepochidx,idxt)); 
+                        if usePCA
+                            mydata = squeeze(EEG.PCAdata(ch,timewindowepochidx,idxt));
+                        else
+                            mydata = squeeze(EEG.data(ch,timewindowepochidx,idxt)); 
+                        end
                         mytimes = EEG.times(timewindowepochidx);
                         freqdata = abs(fft(mydata));
                         % Note: because we're looping through multiple time
