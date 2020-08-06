@@ -27,17 +27,19 @@ dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\Feature
 %fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 %fname_output = '-allfeatures'; %Tag for file name (follows subject name)
 % fname_output = '-testingMAVS'; 
-% fname_output = '-PARAMETERSWEEPfeaturesChA';
+ fname_output = '-PARAMETERSWEEPfeaturesChA';
 % fname_output = '-PARAMETERSWEEPfeaturesChB';
-fname_output = '-PARAMETERSWEEPfeaturesChC';
+%fname_output = '-PARAMETERSWEEPfeaturesChC';
 % fname_output = '-PARAMETERSWEEPfeaturesChD';
 % fname_output = '-PARAMETERSWEEPfeaturesChE';
+%fname_output = '-PARAMETERSWEEPfeaturesChF';
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 1;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 5;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -114,6 +116,10 @@ elseif strcmp(fname_output,'-PARAMETERSWEEPfeaturesChD')
     includedchannels = [];
 elseif strcmp(fname_output,'-PARAMETERSWEEPfeaturesChE')
     includedchannels = [1:2:134]; 
+elseif strcmp(fname_output,'-PARAMETERSWEEPfeaturesChF')
+    usePCA = true;
+    includedcomponents = 133:134; %Need to set as components here so includedchannels doesn't preemtively downsize
+    includedchannels = [];
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,12 +220,15 @@ for s=1:length(subjectnumbers)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Select subset of channels if appropriate
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        if ~isempty(includedchannels)
-            EEG.data = EEG.data(includedchannels,:,:);
-            EEG.chanlocs.labels = EEG.chanlocs.labels(includedchannels,:); % TODO: May need to fix this in the future if labels changes format
-        else 
-            includedchannels = 1:size(EEG.data,1);
-        end
+%         if ~isempty(includedchannels)
+%             EEG.data = EEG.data(includedchannels,:,:);
+%             EEG.chanlocs.labels = EEG.chanlocs.labels(includedchannels,:); % TODO: May need to fix this in the future if labels changes format
+%         else 
+%             includedchannels = 1:size(EEG.data,1);
+%         end
+% Commented this out because ch is indexing through included channels not
+% through 1:length of included channels.
+
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Do additional preprocessing: filter, remove mean or baseline from trials 
