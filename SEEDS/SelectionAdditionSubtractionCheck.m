@@ -44,23 +44,23 @@ for n = 1:length(includedfeatures)
     end
 end
         
-kept_features = added_features
+kept_features = added_features;
 
 %subtrace features in verse order
 for n = length(added_features):-1:1
-   kept_features(n) = [] %removes feature n
+   kept_features(n) = []; %removes feature n
    if isempty(kept_features)
        c = 0;
    else 
      predictorNames = select_data(all_features, kept_features, includedchannels);
      predictors = traindata(:,predictorNames);
-     c =  classification_accuracy(selectedclassifier, predictors, response, cpart)
+     c =  classification_accuracy(selectedclassifier, predictors, response, cpart);
    end 
    
    if c < accuracy
-        kept_features(n) = added_features(n)
+        kept_features(end+1) = added_features(n);
    else 
-       accuracy = c %if accuracy increased reset accuracy and leave feature off list 
+       accuracy = c; %if accuracy increased reset accuracy and leave feature off list 
    end
 end 
 
