@@ -66,4 +66,4 @@ end
 
 %print included features and best accuracy 
 kept_features
-fprintf('\naccuracy = %.2f%%\n', c*100); %print accuracy
+fprintf('\naccuracy = %.2f%%\n', accuracy*100); %print accuracy

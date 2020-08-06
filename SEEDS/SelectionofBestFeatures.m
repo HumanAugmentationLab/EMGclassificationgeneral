@@ -51,7 +51,7 @@ predictors = traindata(:,predictorNames2);
     
 accuracy_best8(n) = classification_accuracy(selectedclassifier, predictors, response, cpart);
 included_features
-fprintf('\naccuracy_best8 = %.2f%%\n', c*100);
+fprintf('\naccuracy_best8 = %.2f%%\n', accuracy_best8*100);
 
 
 %Create figure of accuracy as features get added
@@ -68,6 +68,8 @@ end
 
 idx_sorted_features = 1:length(sorted_features);
 plot(idx_sorted_features, accuracy)
+
+
 
 %table based on the second column which holds the accuracies
 %order features based on validation accuracy
