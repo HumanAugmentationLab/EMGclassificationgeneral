@@ -42,8 +42,19 @@ end
 accuracy_table = table(includedfeatures', acc', 'VariableNames', {'Feature', 'Accuracy'});
 sorted_table = sortrows(accuracy_table, 2, 'descend'); %sort the rows of the accuracy
 
-%Create figure of accuracy as features get added 
 sorted_features = table2array(sorted_table(:,1))';
+
+%Best 8 features
+included_features = sorted_features(1:8);
+predictorNames2 = select_data(variablenames, included_features, includedchannels);
+predictors = traindata(:,predictorNames2);
+    
+accuracy_best8(n) = classification_accuracy(selectedclassifier, predictors, response, cpart);
+included_features
+fprintf('\naccuracy_best8 = %.2f%%\n', c*100);
+
+
+%Create figure of accuracy as features get added
 
 included_features = [];
 accuracy = [];
