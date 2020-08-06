@@ -6,7 +6,7 @@ dir_input = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\Featu
 fname_input = '-allfeatures'; %Tag for file name (follows subject name)
 
 includedspeeds={'both','slow','fast'};%
-sp = 2;
+sp = 1;
 subjectnumbers = 3;
 s=1; %This is here to make loops later
 load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
