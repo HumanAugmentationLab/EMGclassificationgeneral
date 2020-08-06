@@ -9,37 +9,37 @@ load_data = true; %True if you want to load the data from the folder below, fals
 if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
-    dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
+    %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
     %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
-    %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
+    dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
 save_output = true; % True if you want to save a features file
-dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Sam's 
+%dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Sam's 
 %dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
 %dir_output = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's Google
-%dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
+dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
 
-%fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
-%fname_output = '-allfeatures'; %Tag for file name (follows subject name)
+% fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
+% fname_output = '-allfeatures'; %Tag for file name (follows subject name)
 % fname_output = '-testingMAVS'; 
 % fname_output = '-PARAMETERSWEEPfeaturesChA';
 % fname_output = '-PARAMETERSWEEPfeaturesChB';
-%fname_output = '-PARAMETERSWEEPfeaturesChC';
-fname_output = '-PARAMETERSWEEPfeaturesChD';
+% fname_output = '-PARAMETERSWEEPfeaturesChC';
+% fname_output = '-PARAMETERSWEEPfeaturesChD';
 % fname_output = '-PARAMETERSWEEPfeaturesChE';
-%fname_output = '-PARAMETERSWEEPfeaturesChF';
+ fname_output = '-PARAMETERSWEEPfeaturesChF';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 5;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 3;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -99,6 +99,7 @@ usePCA = false; %This gets overwritten in some of the PCA options to be true
 %ChC: Top 8 PCA components
 %ChD: Top 29 PCA components
 %ChE: [1:2:134] 50% of channels (from SEEDS paper)
+%ChF: Last 2 PCA components
 %
 %Make sure includedfeatures = {'meanfreq', 'lscale', 'mmav1', 'mpv' 'stdv', 'damv', 'zeros', 'bp40t56'}; 
 %in the else statement/manual list of feature subsets
