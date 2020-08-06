@@ -27,10 +27,10 @@ dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\Feature
 %fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 %fname_output = '-allfeatures'; %Tag for file name (follows subject name)
 % fname_output = '-testingMAVS'; 
- fname_output = '-PARAMETERSWEEPfeaturesChA';
+% fname_output = '-PARAMETERSWEEPfeaturesChA';
 % fname_output = '-PARAMETERSWEEPfeaturesChB';
 %fname_output = '-PARAMETERSWEEPfeaturesChC';
-% fname_output = '-PARAMETERSWEEPfeaturesChD';
+fname_output = '-PARAMETERSWEEPfeaturesChD';
 % fname_output = '-PARAMETERSWEEPfeaturesChE';
 %fname_output = '-PARAMETERSWEEPfeaturesChF';
 

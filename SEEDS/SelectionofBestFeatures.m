@@ -2,19 +2,20 @@
 %and a graph of how the accuracy changes as you add features
 
 %dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-dir_input = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's 
-fname_input = '-allfeatures'; %Tag for file name (follows subject name)
+dir_input = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Sam's 
+%dir_input = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's 
+fname_input = '-PARAMETERSWEEPfeaturesChD';%'-allfeatures'; %Tag for file name (follows subject name)
 
 includedspeeds={'both','slow','fast'};%
-sp = 2;
-subjectnumbers = 3;
+sp = 1;
+subjectnumbers = 5;
 s=1; %This is here to make loops later
-load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
+load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'-allfeat.mat'))
 
 includedchannels = [1:6:126 127:134]; % [] for all, otherwise this is a vector of channel numbers
 includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
         'rms', 'iemg','mmav1','mpv','var', 'mav', 'zeros', 'mfl', 'ssi', 'medianfreq', 'wamp',...
-        'lscale', 'dfa', 'wl', 'm2', 'damv' 'dasdv', 'dvarv', 'msr', 'ld', 'meanfreq', 'stdv', 'skew', 'kurt',...
+        'lscale', 'dfa', 'wl', 'm2', 'damv', 'dasdv', 'dvarv', 'msr', 'ld', 'meanfreq', 'stdv', 'skew', 'kurt',...
          'np'};
 %includedfeatures = {'mav', 'var', 'rms', 'zeros', 'aac'};
 
@@ -57,6 +58,7 @@ end
 
 idx_sorted_features = 1:length(sorted_features);
 plot(idx_sorted_features, accuracy)
+
 
 %table based on the second column which holds the accuracies
 %order features based on validation accuracy
