@@ -32,11 +32,11 @@ acc = {}; %cell array to hold accuracies
 
 for n = 1:length(includedfeatures)
     %find classification accuracy for each feature individually
-    includedfeature = includedfeatures(n)
+    includedfeature = includedfeatures(n);
     predictorNames = select_data(variablenames, includedfeature, includedchannels);
     predictors = traindata(:,predictorNames);
     
-    acc{n} = classification_accuracy(selectedclassifier, predictors, response, cpart)
+    acc{n} = classification_accuracy(selectedclassifier, predictors, response, cpart);
 end 
 
 accuracy_table = table(includedfeatures', acc', 'VariableNames', {'Feature', 'Accuracy'});
@@ -45,12 +45,12 @@ sorted_table = sortrows(accuracy_table, 2, 'descend'); %sort the rows of the acc
 sorted_features = table2array(sorted_table(:,1))';
 
 %Best 8 features
-included_features = sorted_features(1:8);
-predictorNames2 = select_data(variablenames, included_features, includedchannels);
+best8_features = sorted_features(1:8);
+predictorNames2 = select_data(variablenames, best8_features, includedchannels);
 predictors = traindata(:,predictorNames2);
     
-accuracy_best8(n) = classification_accuracy(selectedclassifier, predictors, response, cpart);
-included_features
+accuracy_best8 = classification_accuracy(selectedclassifier, predictors, response, cpart);
+best8_features
 fprintf('\naccuracy_best8 = %.2f%%\n', accuracy_best8*100);
 
 
@@ -69,11 +69,17 @@ end
 idx_sorted_features = 1:length(sorted_features);
 plot(idx_sorted_features, accuracy)
 
+%run classification with features that increase the classification accuracy
+accuracy_change = diff(accuracy);
+[maxvalues, ind] = maxk(accuracy_change(:), 7);
+idx = ind + 1; %add one to each indice because the differnces are offset by one
+increasing8_features = sorted_features([1 idx']); %include first feature and the 7 which cause the biggest jump in accuracy
 
+predictorNames = select_data(variablenames, increasing8_features, includedchannels);
+predictors = traindata(:,predictorNames);
+accuracy_wincreasing8 = classification_accuracy(selectedclassifier, predictors, response, cpart);
 
-%table based on the second column which holds the accuracies
-%order features based on validation accuracy
-%add one feature at a time and run classification. record classification in
-%an array 
-%plot the list of features in order agains the classifcation accuracy array
+increasing8_features
+fprintf('\nValidataion Accuracy with Increasing 8 Features = %.2f%%\n', accuracy_wincreasing8*100);
+
 
