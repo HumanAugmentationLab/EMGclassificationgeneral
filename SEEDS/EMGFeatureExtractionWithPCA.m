@@ -9,30 +9,35 @@ load_data = true; %True if you want to load the data from the folder below, fals
 if load_data
     %clearvars -except load_data %had re delete this for enviornment set up
     %to work (but it might be important)
-    %dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
+    dir_input =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\';%Must end in slash, this one is for Sam
     %dir_input = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
     %dir_input = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's
-    dir_input = my_dir; %can use this once you have made your own enviornment file and run it
+    %dir_input = my_dir; %can use this once you have made your own enviornment file and run it
     fname_input = '-alldata'; % Tag for file name (follows subject name)
 end
 
 save_output = true; % True if you want to save a features file
-%dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Sam's 
+dir_output = 'C:\Users\saman\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Sam's 
 %dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's
 %dir_output = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's Google
-dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
+%dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
 %dir_output = my_dir;
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\';
-% <<<<<<< HEAD
+
 %fname_output = '-SEEDSfeatures'; %Tag for file name (follows subject name)
 %fname_output = '-allfeatures'; %Tag for file name (follows subject name)
-fname_output = '-testingMAVS'; 
+% fname_output = '-testingMAVS'; 
+% fname_output = '-PARAMETERSWEEPfeaturesChA';
+% fname_output = '-PARAMETERSWEEPfeaturesChB';
+fname_output = '-PARAMETERSWEEPfeaturesChC';
+% fname_output = '-PARAMETERSWEEPfeaturesChD';
+% fname_output = '-PARAMETERSWEEPfeaturesChE';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Subject and other settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-subjectnumbers = 3;%sub_num; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = 1;%sub_num; %Can be a vector with multiple numbers or just an integer
 
 % If you want all conditions then use [];
 condnames =  []; %{"DOWN pressed", "SPACE pressed"};
@@ -55,7 +60,7 @@ includedchannels = [];%1:2; %channels to included, this will calculate features 
 % Choose which speed to include: both puts them in the same file, slow or
 % fast puts them separately. This will loop through all the options below
 % and write a file for each
-includedspeeds = {'both','slow','fast'}; 
+includedspeeds = {'both'};%,'slow','fast'}; 
 
 % Subset of features to use
 if strcmp(fname_output,'-allfeatures') %The list below should be updated to include all possible features
@@ -66,63 +71,9 @@ if strcmp(fname_output,'-allfeatures') %The list below should be updated to incl
 elseif strcmp(fname_output,'-SEEDSfeatures')
     includedfeatures = {'mav', 'var', 'rms', 'zeros', 'damv'}; %features included in SEEDS paper (damv is aac)
 else %This list can be manually set to whatever you want, make sure you choose an appropriate fname_output above
-    includedfeatures = {'meanfreq', 'lscale', 'mmav1', 'mpv', 'stdv', 'damv', 'zeros', 'bp40t56'}; %currently slected features for parameter sweeping
-end
-
-
-usePCA = false;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%% Channel Selection PCA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-channelSelection = true;
-
-if channelSelection
-
-    
-    %Feature subset for parameter sweeping
+    %includedfeatures = {'meanfreq', 'lscale', 'mmav1', 'mpv', 'stdv', 'damv', 'zeros', 'bp40t56'}; %currently slected features for parameter sweeping
     includedfeatures = {'meanfreq', 'lscale', 'mmav1', 'mpv', 'stdv', 'damv', 'zeros', 'bp40t56'};
-    
-    %Channel Parameter Options
-    %(Add directly to the end of fnameoutput tag, ex. '-PARAMETERSWEEPfeaturesChA')
-    %
-    %ChA: [1:19:126 130] 8 channels
-    %ChB: [1:6:126 127:134] 29 channels total
-    %ChC: Top 8 PCA components
-    %ChD: Top 29 PCA components
-    %ChE: [1:2:134] 50% of channels (from SEEDS paper)
-    %
-    %Make sure includedfeatures = {'meanfreq', 'lscale', 'mmav1', 'mpv' 'stdv', 'damv', 'zeros', 'bp40t56'}; 
-    %in the else statement/manual list of feature subsets
-
-    ChA = false;
-    ChB = false;
-    ChC = true;
-    ChD = false;
-    ChE = false;
-
-    if ChA == true
-        fname_output = '-PARAMETERSWEEPfeaturesChA';
-        includedchannels = [1:19:126 130];
-    elseif ChB == true
-        fname_output = '-PARAMETERSWEEPfeaturesChB';
-        includedchannels = [1:6:126 127:134];
-    elseif ChC == true
-        fname_output = '-PARAMETERSWEEPfeaturesChC';
-        usePCA = true;
-        includedchannels = [1:8];
-    elseif ChD == true
-        fname_output = '-PARAMETERSWEEPfeaturesChD';
-        usePCA = true;
-        includedchannels = [1:29]; 
-    elseif ChD == true
-        fname_output = '-PARAMETERSWEEPfeaturesChE';
-        includedchannels = [1:2:134];
-    end %Ch options
-    
-end %channel selection
-
-
-
+end
 
 
 % Time windows and overlap (when breaking window up into multiple bins)
@@ -130,6 +81,41 @@ w.totaltimewindow = [2000 4000]; %start and stop in ms. If timepoints don't line
 w.timewindowbinsize = 2000; %This should ideally divide into an equal number of time points
 w.timewindowoverlap = 0; %Overlap of the time windows
 dfabinsize = [273 315 585 819 1365];
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% Channel Selection PCA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Feature subset for parameter sweeping
+usePCA = false; %This gets overwritten in some of the PCA options to be true
+     
+%Channel Parameter Options
+%(Add directly to the end of fnameoutput tag, ex. '-PARAMETERSWEEPfeaturesChA')
+%
+%ChA: [1:19:126 130] 8 channels
+%ChB: [1:6:126 127:134] 29 channels total
+%ChC: Top 8 PCA components
+%ChD: Top 29 PCA components
+%ChE: [1:2:134] 50% of channels (from SEEDS paper)
+%
+%Make sure includedfeatures = {'meanfreq', 'lscale', 'mmav1', 'mpv' 'stdv', 'damv', 'zeros', 'bp40t56'}; 
+%in the else statement/manual list of feature subsets
+if strcmp(fname_output,'-PARAMETERSWEEPfeaturesChA') 
+     includedchannels = [1:19:126 130];
+elseif strcmp(fname_output,'-PARAMETERSWEEPfeaturesChB') 
+    includedchannels = [1:6:126 127:134];    
+elseif strcmp(fname_output,'-PARAMETERSWEEPfeaturesChC')
+    usePCA = true;
+    includedcomponents = 1:8; %Need to set as components here so includedchannels doesn't preemtively downsize
+    includedchannels = [];
+elseif strcmp(fname_output,'-PARAMETERSWEEPfeaturesChD')
+    usePCA = true;
+    includedcomponents = 1:29; %Need to set as components here so includedchannels doesn't preemtively downsize
+    includedchannels = [];
+elseif strcmp(fname_output,'-PARAMETERSWEEPfeaturesChE')
+    includedchannels = [1:2:134]; 
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%            Preprocessing settings           %%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -321,12 +307,15 @@ for s=1:length(subjectnumbers)
             
             %Potentially add an 'if exists' search for PCAdata
             if usePCA
-                    dataReshape = reshape(EEG.data, 134, []);
-                    EEG.PCAcomponents = pca(dataReshape');
-                    for PCAtrialnum = 1:size(EEG.data,3)
-                        EEG.PCAdata(:,:,PCAtrialnum) = EEG.PCAcomponents'*EEG.data(:,:,PCAtrialnum);
-                    end
-                    %EEG.PCAdata is components by data by trial
+                dataReshape = reshape(EEG.data, size(EEG.data,1), []);
+                EEG.PCAcomponents = pca(dataReshape');
+                for PCAtrialnum = 1:size(EEG.data,3)
+                    EEG.PCAdata(:,:,PCAtrialnum) = EEG.PCAcomponents'*EEG.data(:,:,PCAtrialnum);
+                end
+                %EEG.PCAdata is components by data by trial
+
+                origincludedchannels = includedchannels; % need to save this b/c looping through multiple subjects
+                includedchannels = includedcomponents;
             end
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -550,6 +539,13 @@ for s=1:length(subjectnumbers)
             else
                 save(strcat(dir_output,'subj',num2str(subjectnumbers(s),'%02.f'),fname_output,'_speed',includedspeeds{sp},'.mat'),'traindata','includedfeatures','includedchannels','subjectnumbers');
             end
+        end
+        
+        if usePCA
+            includedchannels = origincludedchannels; %We reset this because we're looping through components and pretending that they are channels 
+            %but there are other places in our code above that need the
+            %original channels. This is sloppy, but will be fixed if we
+            %move to calculating PCA in an earlier stage.
         end
         
     end % speeds
