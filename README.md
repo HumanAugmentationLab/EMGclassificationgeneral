@@ -2,8 +2,6 @@
 
 FractalDim.m - Fractal Dimension Feature Function.
 
-Mobility.m - Hjorth's Mobility Parameter Feature Function.
-
 NeurotechsmilefrownangryblinkS1filt0p5notch56t64epochs.mat - Data Sam collected by placing electrodes on the zygomaticus major + corrugator supercilii. She expressed emotions for each trial to see if we can predict emotions based on neuron signals.
  
 Summer 2020 EEG Epoch.mlx - Attain best classification rate for Sam’s data by playing around with features, classification algorithms, time windows, etc. The current version looks to differentiate between “angry” and “smiling” data.
