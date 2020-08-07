@@ -1,15 +1,17 @@
-%creating table of individual feature classification accuracies
-%and a graph of how the accuracy changes as you add features
+%Selection method based on chosing the features with the best individual
+%classification. This file runs classification for each feature in
+%included_features
 
 %dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
 dir_input = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's 
 fname_input = '-allfeatures'; %Tag for file name (follows subject name)
 
+
 includedspeeds={'both','slow','fast'};%
 sp = 1;
-subjectnumbers = 3;
+subjectnumbers = 4;
 s=1; %This is here to make loops later
-load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'-allfeat.mat'))
+load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
 
 includedchannels = [1:6:126 127:134]; % [] for all, otherwise this is a vector of channel numbers
 includedfeatures = {'bp2t20','bp20t40','bp40t56','bp64t80' ,'bp80t110','bp110t256', 'bp256t512',...
