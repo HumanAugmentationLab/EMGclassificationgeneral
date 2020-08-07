@@ -2,12 +2,13 @@
 %and a graph of how the accuracy changes as you add features
 
 %dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-dir_input = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's 
+%dir_input = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's 
+dir_input = 'C:\Users\rsarin\Google Drive\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Rishita's
 fname_input = '-allfeatures'; %Tag for file name (follows subject name)
 
 includedspeeds={'both','slow','fast'};%
-sp = 2;
-subjectnumbers = 3;
+sp = 1;
+subjectnumbers = 9;
 s=1; %This is here to make loops later
 load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
 
@@ -39,7 +40,7 @@ for n = 1:length(includedfeatures)
     acc{n} = classification_accuracy(selectedclassifier, predictors, response, cpart)
 end 
 
-accuracy_table = table(includedfeatures', acc', 'VariableNames', {'Feature', 'Accuracy'});
+accuracy_table = table(includedfeatures', acc', 'VariableNames', {'Feature', 'Accuracy'})
 sorted_table = sortrows(accuracy_table, 2, 'descend'); %sort the rows of the accuracy
 
 %Create figure of accuracy as features get added 
@@ -56,7 +57,13 @@ for n = 1:length(sorted_features)
 end 
 
 idx_sorted_features = 1:length(sorted_features);
-plot(idx_sorted_features, accuracy)
+plot(idx_sorted_features, accuracy,'o')
+text(idx_sorted_features, accuracy, included_features); %labels
+H=findobj(gca,'Type','text');
+set(H,'Rotation',60); % tilt
+xlabel('Number of Features');
+ylabel('Classification Accuracy');
+title('Class Accuracy as Num Feat Increases');
 
 %table based on the second column which holds the accuracies
 %order features based on validation accuracy
