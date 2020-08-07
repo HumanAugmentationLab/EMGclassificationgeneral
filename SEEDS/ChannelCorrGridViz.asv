@@ -30,7 +30,7 @@ for ch = 1:size(OBJ.TransformWeights,2)
     armgrid = reshape(OBJ.TransformWeights(1:126,ch),9,14);
     imagesc(armgrid);
     colormap(cmapwj); % set colormap
-    caxis([-.2 .2]); %limits for colorbar
+    caxis([-1 1]); %limits for colorbar
     colorbar;
     xticks(1:14)
     xticklabels(labelcols)
@@ -41,7 +41,7 @@ end
 
 %% If plotting PCA components
 [PCAcomps,~,LATENT] = pca(dataReshape');
-%%
+
 figure
 for ch = 1:29
     armgrid = reshape(PCAcomps(1:126,ch),9,14);

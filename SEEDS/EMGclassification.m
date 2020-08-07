@@ -1,17 +1,26 @@
 
 dir_input = 'C:\Users\saman\Documents\MATLAB\EMGdata\FeaturesSubj\'; %Sam's 
-%dir_input = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's 
-fname_input = '-allfeatures'; %Tag for file name (follows subject name)
+%dir_input = 'C:\Users\dketchum\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Declan's
+dir_input = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\FeaturesSubj\'; %Maya's
+
+% fname_input = '-allfeatures'; %Tag for file name (follows subject name)
+% fname_input = '-PARAMETERSWEEPfeaturesChA';
+% fname_input = '-PARAMETERSWEEPfeaturesChB';
+% fname_input = '-PARAMETERSWEEPfeaturesChC';
+% fname_input = '-PARAMETERSWEEPfeaturesChD';
+% fname_input = '-PARAMETERSWEEPfeaturesChE';
+ fname_input = '-PARAMETERSWEEPfeaturesChF';
+
 
 includedspeeds={'both','slow','fast'};%
-sp = 2;
-subjectnumbers = 1;
+sp = 1;
+subjectnumbers = 3;
 s=1; %This is here to make loops later
 load(strcat(dir_input,'subj',num2str(subjectnumbers(s),'%02.f'),fname_input,'_speed',includedspeeds{sp},'.mat'))
 
-includedchannels = [1:6:126 127:134]; % [] for all, otherwise this is a vector of channel numbers
+includedchannels = []; % [] for all, otherwise this is a vector of channel numbers
 
-kval = 9;% %Choose number of folds.
+kval = 5;% %Choose number of folds.
 dotrainandtest = false; % If running on test as well as train
 
 selectedclassifier = {'linSVMmuli'};
