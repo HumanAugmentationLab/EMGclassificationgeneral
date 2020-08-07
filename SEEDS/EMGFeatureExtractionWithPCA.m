@@ -29,10 +29,10 @@ dir_output = 'C:\Users\msivanandan\Google Drive\HAL\Projects\ArmEMG\Data\SEEDS\F
 % fname_output = '-testingMAVS'; 
 % fname_output = '-PARAMETERSWEEPfeaturesChA';
 % fname_output = '-PARAMETERSWEEPfeaturesChB';
-% fname_output = '-PARAMETERSWEEPfeaturesChC';
+ fname_output = '-PARAMETERSWEEPfeaturesChC';
 % fname_output = '-PARAMETERSWEEPfeaturesChD';
 % fname_output = '-PARAMETERSWEEPfeaturesChE';
- fname_output = '-PARAMETERSWEEPfeaturesChF';
+% fname_output = '-PARAMETERSWEEPfeaturesChF';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
