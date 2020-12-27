@@ -1,4 +1,3 @@
-
 % These scripts can help you load data from multiple .mat files provided in
 % the SEEDs data base.
 
@@ -7,21 +6,25 @@
 % This settings help you load your specific data.
 
 % This is the full file path for the folder that contains the subj* folder
+
 %dir_root = 'C:\Users\saman\Documents\MATLAB\EMGdata\'; %Must end in slash, this one is for Sam
-dir_root = 'C:\Users\dketchum\Documents\Summer Research 2020\'; % Declan - update with your file location and uncomment
+%dir_root = 'C:\Users\dketchum\Documents\Summer Research 2020\'; % Declan - update with your file location and uncomment
+dir_root = '';
+%'C:\Users\skuppusamy\Documents\EMGclassificationgeneral\SEEDS\GloveData'; % Shirin - update with your file location and uncomment
 %dir_root = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; % Rishita - update with your file location and uncomment
 %dir_root = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\'; % Maya - update with your file location and uncomment
 
 
 % Directory to save the output file
+
 %dir_output =  'C:\Users\saman\Documents\MATLAB\EMGdata\RawSubj\'; %Must end in slash, this one is for Sam
-dir_output = 'C:\Users\dketchum\Documents\Summer Research 2020\'; %Declan's output directories
+dir_output = ''; %Declan's output directories
 %dir_output = 'C:\Users\rsarin\Desktop\EMG Research\Day 17\'; %Rishita's output directory
 %dir_output = 'C:\Users\msivanandan\Desktop\HAL Summer 2020\SEEDS Database\';
 fname_output = '-alldata'; % Tag for file name (follows subject name)
 save_output = true; % True for save the output as a .mat file
 
-subjectnumbers = 6; %Can be a vector with multiple numbers or just an integer
+subjectnumbers = [1;2;3;4;5;6]; %Can be a vector with multiple numbers or just an integer
 sessionnumbers = 1:3; %Which sessions to include (usually 1-3)
 movementnumbers = 1:13; %which movement to load
 repetitionnumbers = 1:6; %Which repetitions to include
@@ -43,7 +46,7 @@ triallengthsec = 4.0; % Trial length to keep in seconds; Note: data are not all 
 
 
 % Actually load the data into a data structure
-for s=1:length(subjectnumbers(s))
+for s=1:length(subjectnumbers)
     dir_subj = strcat(dir_root,'subj',num2str(subjectnumbers(s),'%02.f'),'\');
     ALLEEG{s} = struct('subject',strcat('subj',num2str(subjectnumbers(s),'%02.f')));
     
@@ -53,9 +56,9 @@ for s=1:length(subjectnumbers(s))
            for rn = repetitionnumbers
                try
                % Load the data from .mat file
-               sdf = load(strcat(dir_subj,'detop_exp01_subj', num2str(subjectnumbers(s),'%02.f'),'_Sess',num2str(se),'_', num2str(mn,'%02.f'),'_', num2str(rn,'%02.f')));
+               sdf = load(strcat(dir_subj,'detop_exp01_subj', num2str(subjectnumbers(s),'%02.f'),'_Sess',num2str(se),'_', num2str(mn,'%02.f'),'_', num2str(rn,'%02.f'),'.mat'));
                catch
-                   disp(strcat('Could not loac: _ ', dir_subj,'detop_exp01_subj', num2str(subjectnumbers(s),'%02.f'),'_Sess',num2str(se),'_', num2str(mn,'%02.f'),'_', num2str(rn,'%02.f')))
+                   disp(strcat('Could not load: _ ', dir_subj,'detop_exp01_subj', num2str(subjectnumbers(s),'%02.f'),'_Sess',num2str(se),'_', num2str(mn,'%02.f'),'_', num2str(rn,'%02.f')))
                end
                if tn == 1 %Things that should be the same for all trials
                 ALLEEG{s}.srate = sdf.fs_emg;
